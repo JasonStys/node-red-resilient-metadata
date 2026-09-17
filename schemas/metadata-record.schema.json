@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/metadata-record.schema.json",
+  "title": "Resilient Metadata Service Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "productId",
+    "version",
+    "displayName",
+    "lifecycle",
+    "sourceTimestamp",
+    "documentation"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "productId": { "$ref": "#/$defs/identifier" },
+    "version": { "$ref": "#/$defs/identifier" },
+    "displayName": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "lifecycle": { "enum": ["active", "deprecated", "end-of-life", "preview"] },
+    "sourceTimestamp": { "type": "string", "format": "date-time" },
+    "documentation": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "url"],
+        "properties": {
+          "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+          "url": { "type": "string", "format": "uri", "pattern": "^https://" }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "propertyNames": { "type": "string", "minLength": 1, "maxLength": 64 },
+      "additionalProperties": {
+        "anyOf": [
+          { "type": "boolean" },
+          { "type": "number" },
+          { "type": "string", "maxLength": 512 }
+        ]
+      },
+      "default": {}
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$"
+    }
+  }
+}

@@ -1,0 +1,72 @@
+<!--
+  File: Resilient Metadata runtime-node editor definition.
+  Purpose: Select a service and the message property containing the typed lookup request.
+  Key fields: service references the config node; requestProperty defaults to msg.payload.
+-->
+<script type="text/javascript">
+  (function () {
+    'use strict';
+
+    RED.nodes.registerType('resilient-metadata', {
+      category: 'network',
+      color: '#8fc7b8',
+      defaults: {
+        name: { value: '' },
+        service: { value: '', type: 'metadata-service', required: true },
+        requestProperty: { value: 'payload', required: true },
+      },
+      inputs: 1,
+      outputs: 2,
+      icon: 'font-awesome/fa-book',
+      align: 'right',
+      paletteLabel: 'metadata lookup',
+      label: function () {
+        return this.name || 'metadata lookup';
+      },
+      outputLabels: ['metadata', 'structured error'],
+    });
+  })();
+</script>
+
+<script type="text/html" data-template-name="resilient-metadata">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Metadata lookup" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-service"><i class="fa fa-server"></i> Service</label>
+    <input type="text" id="node-input-service" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-requestProperty"
+      ><i class="fa fa-ellipsis-h"></i> Request property</label
+    >
+    <input type="text" id="node-input-requestProperty" placeholder="payload" />
+  </div>
+</script>
+
+<script type="text/markdown" data-help-name="resilient-metadata">
+  Looks up versioned product metadata through a bounded, abortable HTTP client.
+
+  ### Inputs
+
+  : request property (object)
+  : Contains `productId`, optional `version`, and optional `locale`. The default property is `msg.payload`.
+
+  ```json
+  {
+    "productId": "drive-200",
+    "version": "2.4.1",
+    "locale": "en-US"
+  }
+  ```
+
+  ### Outputs
+
+  1. **Metadata** — replaces `msg.payload` with the validated service record and adds `msg.metadataLookup` with correlation, attempt, and duration data.
+  2. **Structured error** — preserves the input and adds `msg.metadataError` with stable `code`, `message`, `retriable`, `correlationId`, and safe `details` fields.
+
+  ### Details
+
+  The node displays configuration, request, success, and error status. It rejects malformed messages before network work, never retries authentication/not-found/schema errors, and cancels pending work when the node closes or a flow is redeployed.
+</script>

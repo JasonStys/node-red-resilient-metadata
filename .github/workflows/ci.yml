@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify (${{ matrix.os }}, Node ${{ matrix.node }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [22, 24]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run complete quality gate
+        run: pnpm verify
+      - name: Build installable package
+        if: runner.os == 'Linux' && matrix.node == 24
+        run: pnpm pack:artifact
+      - name: Upload coverage and package evidence
+        if: runner.os == 'Linux' && matrix.node == 24
+        uses: actions/upload-artifact@v7
+        with:
+          name: node-red-resilient-metadata-evidence
+          path: |
+            artifacts/*.tgz
+            coverage/
+          if-no-files-found: error
+          retention-days: 14
