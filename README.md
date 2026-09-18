@@ -155,6 +155,7 @@ Generated `dist/`, `coverage/`, `artifacts/`, and `.tgz` files are intentionally
 - [`Code map`](docs/code-map.md)
 - [`Decision record`](docs/decisions/0001-bounded-shared-client.md)
 - [`Verification reports`](docs/reports/verification-report.md)
+- [`Latest maintenance audit`](docs/reports/maintenance-audit-2026-09-18.md)
 
 ## License
 
