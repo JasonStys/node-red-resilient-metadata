@@ -1,0 +1,9 @@
+# Keep formatter and generated-package inputs identical on Windows and Linux CI.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.tgz binary
