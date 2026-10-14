@@ -15,6 +15,10 @@ from the reviewed manifests. No audit or coverage budget is lowered.
 
 Coordinated CodeQL steps use the same reviewed immutable release where present.
 Source and generated-symbol contracts remain enforced by the existing workflows.
+The initial candidate failed frozen installation because an overlapping lock lacked
+`ignore@7.0.9`. The repaired lock is regenerated from the reviewed direct versions;
+no installation or quality gate is skipped. CI and CodeQL actions are coordinated
+and pinned to immutable reviewed releases. Fresh native CI is required for this head.
 The complete candidate must pass its applicable native CI before promotion.
 [Inspect candidate checks](https://github.com/JasonStys/node-red-resilient-metadata/actions?query=branch%3Amaintenance%2Fportfolio-sync-20261014).
 
