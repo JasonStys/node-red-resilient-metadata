@@ -2,6 +2,15 @@
 
 # Portfolio synchronization — 2026-10-22
 
+## Follow-up dependency review
+
+Dependabot created additional proposals after the first integration merged.
+This separately validated follow-up retains their commit ancestry and reconciles
+the complete dependency union rather than restoring an older package manifest.
+Vitest and its coverage provider remain matched; current runtime and security
+fixes are preserved. All native checks must pass on the new exact source head
+before a normal merge. The earlier review below remains historical context.
+
 By Jason Stys. Source baseline: `64c5581db3b4fc60596b56380f90248f5f989712`.
 
 Reviewed original proposals: [#9](https://github.com/JasonStys/node-red-resilient-metadata/pull/9), [#10](https://github.com/JasonStys/node-red-resilient-metadata/pull/10), [#11](https://github.com/JasonStys/node-red-resilient-metadata/pull/11), [#12](https://github.com/JasonStys/node-red-resilient-metadata/pull/12), [#13](https://github.com/JasonStys/node-red-resilient-metadata/pull/13), [#14](https://github.com/JasonStys/node-red-resilient-metadata/pull/14), [#15](https://github.com/JasonStys/node-red-resilient-metadata/pull/15). Their commit ancestry is retained in a combined integration candidate; a normal merge is permitted only after that exact candidate passes applicable native workflows. No branch protection, test threshold, security scan or failing step is bypassed. Historical references and intentionally separate experiments are preserved.
