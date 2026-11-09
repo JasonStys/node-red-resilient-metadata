@@ -30,3 +30,7 @@ pnpm pack:artifact
 ```
 
 Recorded local results are in [`reports/verification-report.md`](reports/verification-report.md). CI run artifacts are the authoritative evidence for a particular commit.
+
+## Server cooldown regressions
+
+`tests/unit/retry-after.test.ts` uses an injected fixed clock and observed/fake-timer sleeps to test independent expected waits for 429/503, delta seconds, date validation, past dates, minimum spacing, 30-second boundaries, hostile/malformed headers, finite retry budgets and cancellation without a real delay. The official Node-RED runtime helper also exercises a rate-limited lookup recovering on output 1 and a long cooldown reporting on output 2 without an early retry. See `reports/practical-workflows-2026-11-09.md` for observed local evidence.
