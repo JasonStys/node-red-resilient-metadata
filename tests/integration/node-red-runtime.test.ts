@@ -86,6 +86,41 @@ describe('resilient-metadata in Node-RED', () => {
     });
   });
 
+  it('recovers a rate-limited lookup through the real flow without exceeding its retry budget', async () => {
+    const fetch = vi
+      .fn<(...args: [string | URL, RequestInit?]) => Promise<Response>>()
+      .mockResolvedValueOnce(new Response('', { status: 429, headers: { 'retry-after': '0' } }))
+      .mockResolvedValueOnce(jsonResponse(recordFixture()));
+    vi.stubGlobal('fetch', fetch);
+    await loadFlow(1);
+    const received = nextMessage('success');
+    helper
+      .getNode('lookup')
+      .receive({ _msgid: 'rate-limited', payload: { productId: 'drive-200' } });
+    await expect(received).resolves.toMatchObject({ metadataLookup: { attempts: 2 } });
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('reports a long provider cooldown without issuing an early retry', async () => {
+    const fetch = vi.fn(
+      async () => new Response('', { status: 503, headers: { 'retry-after': '120' } }),
+    );
+    vi.stubGlobal('fetch', fetch);
+    await loadFlow(2);
+    const received = nextMessage('failure');
+    helper
+      .getNode('lookup')
+      .receive({ _msgid: 'provider-cooldown', payload: { productId: 'drive-200' } });
+    await expect(received).resolves.toMatchObject({
+      metadataError: {
+        code: 'HTTP_ERROR',
+        retriable: false,
+        details: { retryAfterExceedsLimit: true, retryAfterLimitMs: 30_000 },
+      },
+    });
+    expect(fetch).toHaveBeenCalledOnce();
+  });
+
   it('aborts in-flight work when the flow is unloaded', async () => {
     let requestStarted: (() => void) | undefined;
     const started = new Promise<void>((resolve) => {
@@ -120,13 +155,13 @@ describe('resilient-metadata in Node-RED', () => {
   });
 });
 
-async function loadFlow(): Promise<void> {
-  await helper.load([metadataServiceNode, resilientMetadataNode], baseFlow(), {
+async function loadFlow(retryCount = 0): Promise<void> {
+  await helper.load([metadataServiceNode, resilientMetadataNode], baseFlow(retryCount), {
     service: { apiToken: 'integration-token' },
   });
 }
 
-function baseFlow(): Array<Record<string, unknown>> {
+function baseFlow(retryCount = 0): Array<Record<string, unknown>> {
   return [
     {
       id: 'service',
@@ -135,7 +170,7 @@ function baseFlow(): Array<Record<string, unknown>> {
       baseUrl: 'http://127.0.0.1:4099',
       timeoutMs: 1_000,
       maxResponseBytes: 16_384,
-      retryCount: 0,
+      retryCount,
       retryDelayMs: 0,
       maxConcurrent: 2,
       maxQueueDepth: 4,

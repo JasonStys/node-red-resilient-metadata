@@ -1,6 +1,6 @@
 /**
  * @file Resilient product-metadata HTTP client.
- * @description Applies bounded concurrency, timeout, response limits, validation, and GET-only retry.
+ * @description Applies bounded concurrency, deadlines, validation, and server-aware GET-only retry.
  * @exports MetadataClient, MetadataClientOptions, LookupOutcome, FetchLike, SleepFunction.
  * @data queue bounds all shared work; apiToken remains private; retry is capped by validated config.
  */
@@ -13,11 +13,15 @@ import { IntegrationError, toIntegrationError } from './integration-error';
 export type FetchLike = (input: string | URL, init?: RequestInit) => Promise<Response>;
 export type SleepFunction = (milliseconds: number, signal: AbortSignal) => Promise<void>;
 
+/** Caps each server-requested wait; longer cooldowns require a later operator retry. */
+const MAX_RETRY_AFTER_MS = 30_000;
+
 export interface MetadataClientOptions {
   readonly apiToken?: string;
   readonly configuration: ServiceConfiguration;
   readonly fetch?: FetchLike;
   readonly sleep?: SleepFunction;
+  readonly now?: () => number;
 }
 
 export interface LookupOutcome {
@@ -33,6 +37,7 @@ export class MetadataClient {
   readonly #fetch: FetchLike;
   readonly #queue: BoundedWorkQueue;
   readonly #sleep: SleepFunction;
+  readonly #now: () => number;
 
   /** Captures validated policy, hides the token, and creates the shared bounded queue. */
   constructor(options: MetadataClientOptions) {
@@ -40,6 +45,7 @@ export class MetadataClient {
     this.#configuration = options.configuration;
     this.#fetch = options.fetch ?? globalThis.fetch;
     this.#sleep = options.sleep ?? abortableSleep;
+    this.#now = options.now ?? Date.now;
     this.#queue = new BoundedWorkQueue(
       options.configuration.maxConcurrent,
       options.configuration.maxQueueDepth,
@@ -91,7 +97,9 @@ export class MetadataClient {
         if (!lastError.retriable || attempt === totalAttempts) {
           throw lastError;
         }
-        await this.#sleep(this.#configuration.retryDelayMs, signal);
+        const serverDelay = lastError.details.retryAfterMs;
+        const delay = typeof serverDelay === 'number' ? serverDelay : 0;
+        await this.#sleep(Math.max(this.#configuration.retryDelayMs, delay), signal);
       }
     }
 
@@ -134,7 +142,15 @@ export class MetadataClient {
         signal: controller.signal,
       });
       if (!response.ok) {
-        throw httpError(response.status, response.headers.get('x-request-id'));
+        const error = httpError(
+          response.status,
+          response.headers.get('x-request-id'),
+          response.headers.get('retry-after'),
+          this.#now(),
+        );
+        // Release an unused error response without retaining or exposing its body.
+        void response.body?.cancel().catch(() => undefined);
+        throw error;
       }
       const contentType = response.headers.get('content-type')?.toLowerCase() ?? '';
       if (!contentType.includes('application/json')) {
@@ -261,8 +277,13 @@ async function readBoundedBody(response: Response, maximumBytes: number): Promis
 }
 
 /** Classifies an HTTP status and retains only a small, bounded request identifier. */
-function httpError(status: number, requestId: string | null): IntegrationError {
-  const details: Record<string, number | string> = { status };
+function httpError(
+  status: number,
+  requestId: string | null,
+  retryAfter: string | null,
+  nowMs: number,
+): IntegrationError {
+  const details: Record<string, boolean | number | string> = { status };
   if (requestId !== null && requestId.length <= 128) {
     details.requestId = requestId;
   }
@@ -277,13 +298,47 @@ function httpError(status: number, requestId: string | null): IntegrationError {
   if (status === 404) {
     return new IntegrationError('NOT_FOUND', 'Product metadata was not found', false, details);
   }
-  const retriable = status === 408 || status === 425 || status === 429 || status >= 500;
+  let retriable = status === 408 || status === 425 || status === 429 || status >= 500;
+  if (status === 429 || status === 503) {
+    const delay = parseRetryAfter(retryAfter, nowMs);
+    if (delay !== undefined) {
+      if (delay > MAX_RETRY_AFTER_MS) {
+        // Never retry earlier than a valid server cooldown just to fit our resource cap.
+        retriable = false;
+        details.retryAfterExceedsLimit = true;
+        details.retryAfterLimitMs = MAX_RETRY_AFTER_MS;
+      } else {
+        details.retryAfterMs = delay;
+      }
+    }
+  }
   return new IntegrationError(
     'HTTP_ERROR',
     `Metadata service returned HTTP ${status}`,
     retriable,
     details,
   );
+}
+
+/** Parses bounded delta-seconds or an exact IMF-fixdate; invalid values use configured spacing. */
+function parseRetryAfter(value: string | null, nowMs: number): number | undefined {
+  if (value === null || value.length > 128) {
+    return undefined;
+  }
+  const header = value.trim();
+  if (/^\d+$/.test(header)) {
+    return Number(header) * 1_000;
+  }
+  if (
+    !/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} [A-Z][a-z]{2} \d{4} \d{2}:\d{2}:\d{2} GMT$/.test(header)
+  ) {
+    return undefined;
+  }
+  const dateMs = Date.parse(header);
+  if (!Number.isFinite(dateMs) || new Date(dateMs).toUTCString() !== header) {
+    return undefined;
+  }
+  return Math.max(0, dateMs - nowMs);
 }
 
 /** Creates the stable response-cap error without including remote content. */

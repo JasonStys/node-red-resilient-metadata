@@ -15,6 +15,7 @@ Integration nodes live at a trust boundary. A small amount of code may receive a
 
 - **Predictable load:** configurable concurrency and queue caps prevent unbounded work.
 - **Safe lifecycle:** active requests and queued jobs are cancelled on close or redeploy.
+- **Provider-aware retries:** HTTP 429/503 cooldowns use `Retry-After` seconds or HTTP dates, retain configured minimum spacing, and cancel on redeploy. Cooldowns above 30 seconds go to the error output for later recovery instead of sending an early retry.
 - **Useful failures:** validation, authentication, not-found, timeout, capacity, transport, HTTP, and response-contract failures have stable codes.
 - **Protected secrets:** the API token uses Node-RED credentials and is absent from exported flows and errors.
 - **Operational visibility:** node status and `msg.metadataLookup` expose state, attempts, correlation, and duration.

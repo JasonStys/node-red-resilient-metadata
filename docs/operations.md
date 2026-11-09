@@ -9,11 +9,19 @@
 | Timeout      | 100–60,000 ms           | Deadline per attempt, not for the entire queue wait.       |
 | Max response | 1 KiB–1 MiB             | Maximum declared or streamed response body.                |
 | Retries      | 0–2                     | Additional attempts for eligible idempotent GET failures.  |
-| Retry delay  | 0–5,000 ms              | Abortable fixed delay between attempts.                    |
+| Retry delay  | 0–5,000 ms              | Abortable minimum spacing between attempts.                |
 | Concurrency  | 1–32                    | Shared active requests per config node.                    |
 | Queue depth  | 0–1,000                 | Shared waiting requests before `QUEUE_FULL`.               |
 
 Start with low concurrency and no more than one retry. Increase them only from measured service capacity and latency, because retries consume the same shared capacity as first attempts.
+
+### Provider cooldowns
+
+For HTTP 429 and 503, a valid `Retry-After` delta in whole seconds or IMF-fixdate (for example, `Mon, 09 Nov 2026 12:00:04 GMT`) sets the minimum server cooldown. The client waits for the longer of that duration and the configured retry delay. Past dates and zero seconds still retain configured spacing. Missing, malformed, oversized or obsolete date formats use the configured delay. Other status codes retain their existing policy.
+
+Each server cooldown is capped at 30 seconds **by declining the retry**, not by sending a request before the server permits it. Output 2 then carries `HTTP_ERROR`, `retriable: false`, and safe details `retryAfterExceedsLimit: true` / `retryAfterLimitMs: 30000`. Schedule a later approved retry outside this node. A valid bounded cooldown is reported as `details.retryAfterMs` if the final attempt fails. No raw header or response body is copied into error messages.
+
+Retries still consume shared concurrency, use only GET, and stop at the configured 0–2 additional attempts. Each wait is canceled by caller cancellation or flow redeploy. Date handling uses the local clock, so maintain correct system time. The per-attempt timeout does not include queue or retry waits.
 
 ## Status states
 
