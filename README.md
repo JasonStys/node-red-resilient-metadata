@@ -7,7 +7,7 @@
 
 An installable TypeScript package that adds a reusable product-metadata lookup node to Node-RED. It treats reliability as part of the public contract: untrusted messages and remote responses are schema-validated, concurrency and waiting work are bounded, credentials stay in Node-RED's credential store, safe GET retries are capped, and in-flight work is cancelled during redeploy.
 
-The repository includes a dependency-free mock service, importable flows for normal and failure scenarios, JSON Schemas, an npm tarball build, unit and real-runtime integration tests, coverage enforcement, a performance regression guard, and GitHub security automation.
+The repository includes a dependency-free mock service, importable flows for normal and failure scenarios, JSON Schemas, an npm tarball build, unit and real-runtime integration tests, coverage enforcement, a performance regression guard, and GitHub security automation. Package acceptance also installs the final `.tgz` outside the source tree and runs its shipped nodes in the official Node-RED helper against a real, owned loopback HTTP provider.
 
 ## Why this project is useful
 
@@ -101,49 +101,53 @@ The complete schemas and compatibility rules are in [`docs/message-contract.md`]
 
 ## Repository map
 
-| Path                                         | Summary                                                                                            |
-| -------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `.github/workflows/ci.yml`                   | Cross-platform formatting, lint, type, unit, integration, build, benchmark, and package checks.    |
-| `.github/workflows/codeql.yml`               | JavaScript/TypeScript static security analysis.                                                    |
-| `.github/dependabot.yml`                     | Weekly npm and Actions dependency review.                                                          |
-| `editor/metadata-service.html`               | Config-node editor, credential control, numeric validation, and inline help.                       |
-| `editor/resilient-metadata.html`             | Runtime-node editor, two-output definition, and message help.                                      |
-| `examples/flows/reliability-demo.json`       | Importable normal, retry, timeout, malformed, invalid-input, and MQTT flow.                        |
-| `examples/mock-service/server.mjs`           | Local dependency-free simulator with deterministic failure modes.                                  |
-| `schemas/lookup-request.schema.json`         | Portable input JSON Schema.                                                                        |
-| `schemas/metadata-record.schema.json`        | Portable service-response JSON Schema.                                                             |
-| `scripts/clean.mjs`                          | Cross-platform compiled-output cleanup.                                                            |
-| `scripts/copy-editor.mjs`                    | Places Node-RED editor assets beside compiled runtime files.                                       |
-| `scripts/verify-package.mjs`                 | Confirms required runtime/editor/schema files exist before packaging.                              |
-| `src/contracts.ts`                           | Zod request/record schemas and untrusted-input parser.                                             |
-| `src/benchmark.ts`                           | Validation throughput and queue-drain regression guard.                                            |
-| `src/nodes/metadata-service.ts`              | Shared configuration-node registration and lifecycle.                                              |
-| `src/nodes/resilient-metadata.ts`            | Message processing, status, output routing, and per-node close handling.                           |
-| `src/nodes/node-types.ts`                    | Typed contract between the two Node-RED nodes.                                                     |
-| `src/runtime/bounded-work-queue.ts`          | Bounded FIFO scheduler with abort and close semantics.                                             |
-| `src/runtime/configuration.ts`               | URL normalization and numeric policy validation.                                                   |
-| `src/runtime/integration-error.ts`           | Stable error taxonomy and safe serialization.                                                      |
-| `src/runtime/metadata-client.ts`             | HTTP boundary, retry policy, byte cap, schema checks, and correlation headers.                     |
-| `src/types/node-red-node-test-helper.d.ts`   | Minimal local typings for the official untyped test helper.                                        |
-| `tests/unit/`                                | Fast deterministic tests for contracts, configuration, queueing, errors, and HTTP behavior.        |
-| `tests/integration/node-red-runtime.test.ts` | Real Node-RED helper tests for routing, credentials, status lifecycle, and unload cancellation.    |
-| `docs/`                                      | Architecture, operations, security, contracts, testing, decisions, code map, and recorded reports. |
+| Path                                         | Summary                                                                                                           |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `.github/workflows/ci.yml`                   | Cross-platform formatting, lint, type, unit, integration, build, benchmark, and package checks.                   |
+| `.github/workflows/codeql.yml`               | JavaScript/TypeScript static security analysis.                                                                   |
+| `.github/dependabot.yml`                     | Weekly npm and Actions dependency review.                                                                         |
+| `editor/metadata-service.html`               | Config-node editor, credential control, numeric validation, and inline help.                                      |
+| `editor/resilient-metadata.html`             | Runtime-node editor, two-output definition, and message help.                                                     |
+| `examples/flows/reliability-demo.json`       | Importable normal, retry, timeout, malformed, invalid-input, and MQTT flow.                                       |
+| `examples/mock-service/server.mjs`           | Local dependency-free simulator with deterministic failure modes.                                                 |
+| `schemas/lookup-request.schema.json`         | Portable input JSON Schema.                                                                                       |
+| `schemas/metadata-record.schema.json`        | Portable service-response JSON Schema.                                                                            |
+| `scripts/clean.mjs`                          | Cross-platform compiled-output cleanup.                                                                           |
+| `scripts/copy-editor.mjs`                    | Places Node-RED editor assets beside compiled runtime files.                                                      |
+| `scripts/verify-package.mjs`                 | Confirms required files, then invokes isolated installed-package acceptance.                                      |
+| `scripts/installed-consumer.mjs`             | Packs/installs a private consumer, binds reviewed Zod integrity, and runs its native acceptance process.          |
+| `tests/package/installed-node-red.mjs`       | Loads only installed manifest registrations in the real Node-RED helper with actual HTTP and unload cancellation. |
+| `src/contracts.ts`                           | Zod request/record schemas and untrusted-input parser.                                                            |
+| `src/benchmark.ts`                           | Validation throughput and queue-drain regression guard.                                                           |
+| `src/nodes/metadata-service.ts`              | Shared configuration-node registration and lifecycle.                                                             |
+| `src/nodes/resilient-metadata.ts`            | Message processing, status, output routing, and per-node close handling.                                          |
+| `src/nodes/node-types.ts`                    | Typed contract between the two Node-RED nodes.                                                                    |
+| `src/runtime/bounded-work-queue.ts`          | Bounded FIFO scheduler with abort and close semantics.                                                            |
+| `src/runtime/configuration.ts`               | URL normalization and numeric policy validation.                                                                  |
+| `src/runtime/integration-error.ts`           | Stable error taxonomy and safe serialization.                                                                     |
+| `src/runtime/metadata-client.ts`             | HTTP boundary, retry policy, byte cap, schema checks, and correlation headers.                                    |
+| `src/types/node-red-node-test-helper.d.ts`   | Minimal local typings for the official untyped test helper.                                                       |
+| `tests/unit/`                                | Fast deterministic tests for contracts, configuration, queueing, errors, and HTTP behavior.                       |
+| `tests/integration/node-red-runtime.test.ts` | Real Node-RED helper tests for routing, credentials, status lifecycle, and unload cancellation.                   |
+| `docs/`                                      | Architecture, operations, security, contracts, testing, decisions, code map, and recorded reports.                |
 
 Generated `dist/`, `coverage/`, `artifacts/`, and `.tgz` files are intentionally ignored. CI publishes coverage and the installable tarball as run artifacts.
 
 ## Commands
 
-| Command                 | Purpose                                                               |
-| ----------------------- | --------------------------------------------------------------------- |
-| `pnpm format:check`     | Verify repository formatting.                                         |
-| `pnpm lint`             | Run type-aware ESLint rules.                                          |
-| `pnpm typecheck`        | Compile-check all source and tests without emitting.                  |
-| `pnpm test`             | Run unit tests with enforced coverage thresholds.                     |
-| `pnpm test:integration` | Load the nodes in the official Node-RED test runtime.                 |
-| `pnpm build`            | Compile declarations/source maps and copy editor assets.              |
-| `pnpm benchmark`        | Exercise validation and queue hot paths with broad regression guards. |
-| `pnpm verify`           | Run the complete local quality gate.                                  |
-| `pnpm pack:artifact`    | Produce an installable npm tarball under `artifacts/`.                |
+| Command                             | Purpose                                                                                              |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `pnpm format:check`                 | Verify repository formatting.                                                                        |
+| `pnpm lint`                         | Run type-aware ESLint rules.                                                                         |
+| `pnpm typecheck`                    | Compile-check all source and tests without emitting.                                                 |
+| `pnpm test`                         | Run unit tests with enforced coverage thresholds.                                                    |
+| `pnpm test:integration`             | Load the nodes in the official Node-RED test runtime.                                                |
+| `pnpm build`                        | Compile declarations/source maps and copy editor assets.                                             |
+| `pnpm benchmark`                    | Exercise validation and queue hot paths with broad regression guards.                                |
+| `pnpm package:verify`               | After building, install the final TGZ in a private consumer and run seven actual HTTP/runtime cases. |
+| `pnpm audit --audit-level=moderate` | Audit the complete development and production dependency graph.                                      |
+| `pnpm verify`                       | Run the complete local quality gate.                                                                 |
+| `pnpm pack:artifact`                | Produce an installable npm tarball under `artifacts/`.                                               |
 
 ## Documentation
 
@@ -155,7 +159,8 @@ Generated `dist/`, `coverage/`, `artifacts/`, and `.tgz` files are intentionally
 - [`Development guide`](docs/development.md)
 - [`Code map`](docs/code-map.md)
 - [`Decision record`](docs/decisions/0001-bounded-shared-client.md)
-- [`Verification reports`](docs/reports/verification-report.md)
+- [`Installed-package validation`](docs/reports/installed-consumer-2026-11-09.md)
+- [`Historical verification report`](docs/reports/verification-report.md)
 - [`Latest maintenance audit`](docs/reports/maintenance-audit-2026-09-18.md)
 
 ## License

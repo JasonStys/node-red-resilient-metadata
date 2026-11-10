@@ -28,3 +28,23 @@ Source line numbers drift as the project evolves, so this map uses stable symbol
 | `examples/mock-service/server.mjs`  | `sendRecord`                    | Schema-valid deterministic example record.                                    |
 
 Every TypeScript/JavaScript source and test file begins with a file header describing purpose, exports, and significant data. Public classes and boundary functions use nearby documentation comments; this map centralizes cross-file navigation without brittle hard-coded line references.
+
+## Installed package acceptance locations
+
+These new package-boundary entry points have exact authored line locations; update this table when editing the harness. Existing runtime anchors above remain searchable.
+
+| File:line                                  | Function or important data                     | Responsibility                                                                                      |
+| ------------------------------------------ | ---------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `scripts/installed-consumer.mjs:17`        | `root`                                         | Trusted development host identity; never the product import root.                                   |
+| `scripts/installed-consumer.mjs:20`        | `command`                                      | Identified JS entrypoint, clean environment, bounded child process.                                 |
+| `scripts/installed-consumer.mjs:37`        | `npmCli`                                       | Existing official Node-layout npm CLI discovery.                                                    |
+| `scripts/installed-consumer.mjs:55`        | `verifyInstalledConsumer`                      | Canonical owned consumer, pack/install, reviewed dependency identity, child acceptance and cleanup. |
+| `tests/package/installed-node-red.mjs:18`  | `consumer`, `toolsRoot`, `registrations`       | Physical installed product boundary separate from locked host framework.                            |
+| `tests/package/installed-node-red.mjs:52`  | `bounded`                                      | Absolute wait deadline independent of the product timeout.                                          |
+| `tests/package/installed-node-red.mjs:70`  | `callback`                                     | Deadline-bound real runtime server lifecycle.                                                       |
+| `tests/package/installed-node-red.mjs:77`  | `providerEvents`, `mode`, `requests`, `record` | Synthetic provider state and independent observed request counters.                                 |
+| `tests/package/installed-node-red.mjs:93`  | `provider`                                     | Actual owned HTTP success/failure/cooldown/held-socket fixture.                                     |
+| `tests/package/installed-node-red.mjs:122` | `flow`                                         | Fresh installed-node flow with protected synthetic credentials.                                     |
+| `tests/package/installed-node-red.mjs:158` | `message`                                      | Actual output event with independent deadline.                                                      |
+| `tests/package/installed-node-red.mjs:164` | `send`                                         | Fixed synthetic input through the installed runtime node.                                           |
+| `tests/package/installed-node-red.mjs:170` | `started`, `checks`                            | Owned-resource lifetime and seven-case acceptance record.                                           |

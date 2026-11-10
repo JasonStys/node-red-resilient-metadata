@@ -38,10 +38,11 @@
     "format:check": "prettier --check .",
     "lint": "eslint . --max-warnings=0",
     "pack:artifact": "pnpm build && pnpm pack --pack-destination artifacts",
+    "package:verify": "node scripts/verify-package.mjs",
     "test": "vitest run --coverage",
     "test:integration": "vitest run --config vitest.integration.config.mts",
     "typecheck": "tsc --noEmit",
-    "verify": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm test:integration && pnpm build && pnpm benchmark && node scripts/verify-package.mjs"
+    "verify": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm test:integration && pnpm build && pnpm benchmark && pnpm package:verify"
   },
   "dependencies": {
     "zod": "4.6.7"
@@ -50,7 +51,7 @@
     "@eslint/js": "10.0.1",
     "@types/node": "22.20.5",
     "@types/node-red": "1.3.5",
-    "@vitest/coverage-v8": "5.0.1",
+    "@vitest/coverage-v8": "5.0.5",
     "eslint": "10.13.0",
     "node-red": "5.0.8",
     "node-red-node-test-helper": "0.3.6",
@@ -58,6 +59,6 @@
     "tsx": "4.23.15",
     "typescript": "5.9.3",
     "typescript-eslint": "8.71.2",
-    "vitest": "5.0.1"
+    "vitest": "5.0.5"
   }
 }

@@ -5,3 +5,12 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - prettier@3.9.7
 nodeLinker: hoisted
+# Scoped patched development-tool leaves; production Zod remains unchanged.
+overrides:
+  'body-parser@>=1 <1.20.9': 1.20.9
+  'multer@>=2 <2.5.0': 2.5.0
+  'fast-uri@>=3 <3.1.9': 3.1.9
+  'qs@>=6.7.0 <=6.16.0': 6.16.1
+  'follow-redirects@>=1.16.0 <1.16.2': 1.16.2
+  'minimatch@>=7 <11': 11.0.5
+  'vite@>=8.3.0 <8.3.3': 8.3.4
