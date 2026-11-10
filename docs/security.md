@@ -27,3 +27,7 @@ Node-RED administrators can read deployed runtime configuration and install modu
 ## Reporting
 
 Please do not open a public issue for a suspected vulnerability. Follow [`SECURITY.md`](../SECURITY.md) for private reporting guidance and include the affected version, reproducible conditions, and impact without real credentials.
+
+## Package validation boundary
+
+The package consumer test uses only synthetic credentials, an owned loopback HTTP fixture, and the actual installed TGZ. Empty private npm configuration files, disabled install scripts, a credential-filtered child environment, exact runtime dependency integrity and physical path checks reduce exposure during that test. The development host is not bundled into the two-node product: patched Node-RED/helper transport and test-tool dependencies are locked and separately audited in full. These measures do not authenticate a manually shared archive; use an independently trusted distribution channel and review its hash/evidence.

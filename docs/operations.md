@@ -54,3 +54,9 @@ The mock modes are synthetic and deterministic: `retry-demo`, `timeout-demo`, `m
 ## Upgrade and rollback
 
 Before upgrading, export the flow without credentials, save the installed tarball, and run the example flow in a non-production instance. To roll back, stop Node-RED, install the previous tarball in the user directory, then restart. Credentials remain associated with the config node ID unless the config node is replaced.
+
+## Accepting a built package
+
+After `pnpm install --frozen-lockfile` and `pnpm build`, run `pnpm package:verify`. This creates a separate temporary npm consumer, installs the final TGZ with scripts disabled, verifies its runtime dependency identity, and executes seven real Node-RED/HTTP cases before removing only that owned fixture. A local package SHA-256 identifies the exact tested archive; it is a checksum, not publisher authentication or operating-system signing.
+
+Use `pnpm pack:artifact` to produce the installable archive under `artifacts/`; the repository does not automatically publish to npm or ship a native desktop installer. Run artifacts can expire and should not be described as permanent public releases. Keep a copy of the exact accepted archive and its consumer evidence before installing it in an approved non-production Node-RED user directory. Runtime hosts still require their own authentication, TLS, storage and flow review.
