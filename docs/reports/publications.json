@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "project": "node-red-resilient-metadata",
+  "author": "Jason Stys",
+  "editionDate": "2026-11-09",
+  "sourceBaseline": "db08d20afb9088310b76d090c5c12e8964f4676d",
+  "sourceUrl": "https://github.com/JasonStys/node-red-resilient-metadata/tree/db08d20afb9088310b76d090c5c12e8964f4676d",
+  "functionalEvidenceBaseline": "db08d20afb9088310b76d090c5c12e8964f4676d",
+  "evidenceObservedAt": "2026-11-10T05:25:40.628667+00:00",
+  "workflowEvidence": [
+    {
+      "conclusion": "success",
+      "databaseId": 42749651255,
+      "event": "push",
+      "headSha": "db08d20afb9088310b76d090c5c12e8964f4676d",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/JasonStys/node-red-resilient-metadata/actions/runs/42749651255"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 42749651088,
+      "event": "push",
+      "headSha": "db08d20afb9088310b76d090c5c12e8964f4676d",
+      "name": "CodeQL",
+      "status": "completed",
+      "url": "https://github.com/JasonStys/node-red-resilient-metadata/actions/runs/42749651088"
+    }
+  ],
+  "summary": "Install bounded, credential-aware Node-RED metadata nodes. Final TGZ tests now use a real separate Node-RED runtime and HTTP provider to verify success, routing, retry, cooldown and cancellation; compatible tooling fixes and full-graph auditing address the exposed dependency findings.",
+  "rationale": "Tests the distributed package at its actual message and network boundary and closes the security gap left by a partial dependency audit.",
+  "limitations": [
+    "Synthetic local providers and in-memory fixture storage exercise the installed node lifecycle, not a production editor deployment, external provider availability or persistent flow configuration.",
+    "The Node-RED host remains a separate installation responsibility. No new public npm publication or native desktop installer is supplied.",
+    "Known-advisory audit results are time-specific and do not prove absence of vulnerabilities; checksum evidence does not establish publisher authentication."
+  ],
+  "documents": [
+    {
+      "filename": "project-guide.docx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "bytes": 47261,
+      "sha256": "4ef2613ecda886384eedc503140cc202a143b16480045d0538bb1207eec64400",
+      "sourceBaseline": "db08d20afb9088310b76d090c5c12e8964f4676d",
+      "visualReview": {
+        "approved": true,
+        "method": "Every rendered page individually viewed at readable original resolution",
+        "pageCount": 8,
+        "renderedPageSha256": {
+          "page-1.png": "ed5e10e01a29359ee31b0cd8d74930bd275a983a9a9a058b4be4bb39183b298f",
+          "page-2.png": "03c7a043aeae3cf92636f31141a69afa2ce3ba4b57bf468e6fadc12dc63289a3",
+          "page-3.png": "697e1f2d94b42aadc9c5a43c52e77274776cd501092e6d89c16fdf55d9eb38d7",
+          "page-4.png": "94deb746f58b569db6004b907192a36dee60cda0f1e5c23df2a596a3d1a5b276",
+          "page-5.png": "ddde7e41b3fb652e9ad3fee30afd5dbc8d28d33e409337fc3f9c6caaee5cabcb",
+          "page-6.png": "706befdc5d286de51aece9856fa03fbe8705b02021fdd0b018dff03c05dc9604",
+          "page-7.png": "f9ea239d37d0eadd58b80aa3ea4fcb31b8abe5329aa8a2af3f4ea0f54c6639ac",
+          "page-8.png": "99fc1dc8cd9c3dde9901b323efec32679ba8033643ecbe8fd4b60d156197e304"
+        }
+      }
+    }
+  ],
+  "scope": "Reviewed documentation editions of the cited source. Checksums identify bytes, not authorship. Historical measurements retain their own dates; integration CI must be checked separately."
+}
