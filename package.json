@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-resilient-metadata",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Credential-safe Node-RED metadata lookup with bounded concurrency, cancellation, structured errors, and tested message contracts.",
   "keywords": [
     "node-red",
@@ -42,7 +42,10 @@
     "test": "vitest run --coverage",
     "test:integration": "vitest run --config vitest.integration.config.mts",
     "typecheck": "tsc --noEmit",
-    "verify": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm test:integration && pnpm build && pnpm benchmark && pnpm package:verify"
+    "code-map": "node scripts/generate-code-map.mjs",
+    "code-map:check": "node scripts/generate-code-map.mjs --check",
+    "native:test": "node --test desktop/tests/channel.test.cjs desktop/tests/state-owner.test.cjs desktop/tests/startup-refusal.test.cjs desktop/tests/resources.test.cjs desktop/tests/physical-graph.test.cjs desktop/tests/engine.test.cjs",
+    "verify": "pnpm format:check && pnpm code-map:check && pnpm lint && pnpm typecheck && pnpm test && pnpm test:integration && pnpm build && pnpm benchmark && pnpm package:verify"
   },
   "dependencies": {
     "zod": "4.6.7"

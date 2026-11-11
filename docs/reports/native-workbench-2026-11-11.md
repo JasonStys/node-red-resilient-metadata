@@ -1,0 +1,41 @@
+# Native metadata workbench: observed local validation
+
+The 1.1.0 source candidate adds an editable Windows workbench around the original two shipped nodes and genuine Node-RED 5.0.8. A user authors message batches, authorized provider records and queue/retry policy, saves a durable project, runs the actual graph and inspects each original output and completion. Prepared records are data within that application. The original installable Node-RED package remains independently usable.
+
+## Completed source checks
+
+The observed local `pnpm verify` run passed formatting, generated declaration/line-map freshness, lint, types, 69 unit tests, six original runtime-helper integration tests, build, broad performance guards and seven actual final-TGZ consumer cases outside the repository. That consumer loads the installed node manifest and real HTTP transport; it does not import source nodes or replace global fetch. Its original five-second message/lifecycle bounds remain unchanged.
+
+Unit coverage includes the original transport-independent runtime and new project/history model: 307/315 statements (97.46%), 228/240 branches (95.00%), 57/59 functions (96.61%) and 298/305 lines (97.70%). The existing 90% statement/line and 85% branch/function floors remain. Child Node-RED, native Electron and vendor code are not included in that denominator.
+
+The 65 native contract tests passed. Fifteen run independent real Node-RED/provider processes for success, 429/503 recovery, excessive cooldown, timeout, malformed/authentication/not-found responses, malformed messages, overflow, held cancellation, pre-input cancellation, held close, record/graph redeploy and observer failure. The remaining tests cover actual bounded files and aliases, current/previous saves and CAS refusal, verified resource trees, exact child-channel ordering, and retained accepted work. The close-before-runtime fault host executes the actual main/profile code: the acquired lock is absent at the exact failure-exit call, and only one explicit failure exit occurs. A held actual local file write remains owned after a child fault. This host-control test is separate from a compiled Electron acceptance run.
+
+Twenty-two real component/lock/TAR preparation tests and six real ZIP/relocation boundary tests passed on Windows. They include hardlinks, traversal, byte growth, duplicate/archive entries, exact upstream/variant hashes, deterministic executable modes, conflicting-existing-output preservation and bounded actual decompression.
+
+## Dependency closure and actual CLI behavior
+
+The original development runtime and separately shipped runtime both use Node-RED 5.0.8. A physical-tree check admitted 595 development dependency roots and 413 native runtime dependency roots on this Windows installation, with no opaque bundled-package declarations. It independently checked 416 original non-manifest npm files (CLI, documentation and terms), the disclosed variant manifest, frozen-lock membership and the affected glob/minimatch ranges. Those physical counts are not lockfile optional-platform or advisory-service dependency counts.
+
+The original pnpm graph, private runtime npm graph and desktop build-tool npm graph each returned zero known advisories in their complete locked audits. This is an observation of the advisory services at validation time, not proof that arbitrary vendor code is secure. There are no advisory exclusions or lowered severity gates.
+
+Both actually installed npm 12.2.2+workbench.1 contexts passed seven independently specified offline CLI checks under the shipped Electron Node 24.22.2: real packlist/TGZ, ignored-script sentinel, offline install, exact installed bytes and module execution, uncached failure preservation, and actual glob/minimatch acceptance/refusal. Each owned registry tripwire recorded zero requests. The version is a disclosed manifest/dependency variant, not an upstream-signed npm release. See [component provenance](../native-npm-component.md) for exact source, terms, deterministic TAR identities and limitations.
+
+## Actual source application
+
+The final local source application passed ten user-journey groups across two visible Electron launches: authored records/messages and exact voltage 460, all four Keep-editing replacement paths and explicit replacement, nonfinite/duplicate JSON refusal without saved-state changes, actual 429 recovery, original malformed-message errors, real project/flow/run exports and import refusals, held-request cancellation/redeploy, durable same-profile restart, held-to-success replay, and repeated Quit/Close while an actual export is held. Both exits were zero; there were no renderer errors. Electron was 44.11.1 with Node 24.22.2. Development resources were explicitly marked dirty; this result does not substitute for compiled clean-source acceptance.
+
+## Preserved failures and corrective evidence
+
+- Sandboxed NTFS alias fixtures were denied by the OS, and sandboxed real HTTP cases could not complete. The unchanged complete suites passed with normal-user permissions in disposable synthetic profiles and owned loopback listeners. These failed attempts remain local evidence; they were not marked passing or skipped.
+- A directory-based package-manager dependency created hardlinks in prepared component source. The strict single-link guard correctly refused packaging. A deterministic, pinned plain TAR supplies both frozen graphs without relaxing that guard; the prepared 418-file source still verifies after both installs.
+- One development UI attempt exceeded its original readiness deadline; its historical cause was not established. A separate real child control demonstrated readiness and normal closure. No deadline was increased or retry added to acceptance.
+- Real utility-process exit zero did not by itself allow transient-directory removal when the child working directory was that directory. A controlled same-child comparison reproduced Windows removal failure there and success with the immutable resource directory as working directory. Mutable paths remain explicit in the owned temporary directory. Cleanup failure remains a failure.
+- Actual Electron controls demonstrated that setting `process.exitCode` followed by `app.quit()` can still report exit zero. Fatal paths now use explicit status 1 after actual child and accepted-work settlement, or before any child exists. Normal successful Quit remains unchanged. Competing startup/close failures share one cleanup promise.
+
+## Acceptance still required for distribution
+
+These observations do not claim an installed or published application. The native workflow must build exact clean source, compare every actual relocated ZIP payload, and drive two real compiled launches with authored records, invalid input, Keep/Replace decisions, retry/cancel/redeploy, project/flow/run export, durable restart and held Quit. Native package receipts are separate from source tests. Hosted original Node 22/24 Linux/Windows gates, native acceptance and processed CodeQL results are independently required for the final accepted source.
+
+The original JavaScript/TypeScript CodeQL job and category are retained; new Python and Actions security-extended analyses cover new packaging and workflow tooling. Passing PR jobs alone do not establish a clean full-main scan.
+
+The Windows x64 package is unsigned. There is no OS installer, updater, service, MQTT/hardware/cloud connection, automatic metadata-unit conversion, multiuser authentication or encrypted local store. History is a bounded ten-run/16-MiB local review, not a complete audit archive. Static ordinary-file/profile admission and local hashes do not defeat a hostile concurrent same-account writer; current/previous saves are not a multi-file atomic transaction. Existing unknown files and interrupted ownership evidence are preserved for review.

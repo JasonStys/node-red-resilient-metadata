@@ -13,7 +13,15 @@ The test pyramid emphasizes deterministic logic, then validates the Node-RED bou
 
 ## Coverage policy
 
-Unit coverage applies to contracts and transport-independent runtime code. Global thresholds are 90% statements, 90% lines, 85% branches, and 85% functions. Node-RED registration code is evaluated through real-runtime integration tests instead of misleading line-only coverage.
+Unit coverage applies to contracts, transport-independent runtime and the native project/history model. Global thresholds remain 90% statements, 90% lines, 85% branches and 85% functions. Adding the native model expands the denominator without reducing a floor. Node-RED registration/child-runtime behavior is evaluated through genuine integration/native tests, not attributed to parent-process coverage.
+
+## Native acceptance
+
+`pnpm native:test` adds fifteen real Node-RED/provider scenarios (no helper runtime or fetch double), retained channel ordering and actual file/profile/resource controls. Cases cover success, 429/503 retry, excessive cooldown, timeout, malformed/auth/not-found, invalid input, overflow, held/pre-input cancel, held close, record/graph redeploy and observer failure. Original helper-based and installed-tarball acceptance remain mandatory.
+
+The real Electron journey uses independently specified authored voltage 460, original `INVALID_INPUT`, three actual requests for two inputs after one 429, ordinary exported-flow structure, retained cancellation and durable history. A native save dialog is held while repeated Quit/Close must retain the visible app, actual export, child and provider. Readiness remains 120 seconds; normal exit 45 seconds. No retry-until-pass or forced-kill success exists. Actual final ZIP relocation and two compiled launches are mandatory, separately from source UI checks.
+
+The installer-component fixtures test real archives/locks and genuine offline CLI pack/install/config/glob behavior with a fresh cache and actual unused registry tripwire. Complete private runtime and desktop-tool graphs audit at moderate severity without suppression; the original pnpm graph remains independent. CodeQL retains the original JS/TS analyze job/category and adds Python/Actions security-extended analyses for new tooling. PR scans and final processed full-main results are separate acceptance evidence.
 
 ## CI policy
 
@@ -31,7 +39,7 @@ pnpm audit --audit-level=moderate
 pnpm pack:artifact
 ```
 
-Recorded local results are in [`reports/verification-report.md`](reports/verification-report.md). CI run artifacts are the authoritative evidence for a particular commit.
+Recorded original local results are in [`reports/verification-report.md`](reports/verification-report.md); [native workbench observations](reports/native-workbench-2026-11-11.md) distinguish source, dependency and distribution checks. CI run artifacts are the authoritative evidence for a particular commit.
 
 ## Server cooldown regressions
 

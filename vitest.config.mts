@@ -9,7 +9,7 @@ export default defineConfig({
   test: {
     coverage: {
       exclude: ['src/benchmark.ts', 'src/nodes/**'],
-      include: ['src/contracts.ts', 'src/runtime/**'],
+      include: ['src/contracts.ts', 'src/runtime/**', 'src/workbench/project.ts'],
       provider: 'v8',
       reporter: ['text', 'json-summary', 'html'],
       thresholds: {

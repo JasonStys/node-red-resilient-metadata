@@ -4,3 +4,8 @@ dist/
 node_modules/
 pnpm-lock.yaml
 examples/flows/*.json
+.runtime/
+release/
+native-installer/source/
+# Exact upstream JSON bytes are part of the separately verified component receipt.
+native-installer/upstream-package.json

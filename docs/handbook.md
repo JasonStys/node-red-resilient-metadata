@@ -16,6 +16,8 @@ The editable Markdown remains the maintenance source. The Word files are readabl
 
 ## Current usage and help
 
+The new [native application guide](native-application.md) covers the genuine editable Node-RED workbench, saved project/run history, independent flow exports and actual child/provider lifecycle. Existing Word publication identities above describe their recorded historical source baseline; they have not been silently regenerated to claim native-release acceptance. Native release/install/desktop-icon acceptance is recorded separately after reviewed delivery.
+
 [README quick start](../README.md) is the entry point. Use the project-specific guides below before changing inputs, operating modes or deployment assumptions.
 
 ### Usage and operations

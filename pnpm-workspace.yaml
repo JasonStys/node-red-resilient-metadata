@@ -1,3 +1,5 @@
+packages:
+  - '.'
 allowBuilds:
   bcrypt: true
   esbuild: true
@@ -7,6 +9,8 @@ minimumReleaseAgeExclude:
 nodeLinker: hoisted
 # Scoped patched development-tool leaves; production Zod remains unchanged.
 overrides:
+  'npm@11.21.0': file:./native-installer/npm-12.2.2-workbench.1.tar
+  'glob@>=9 <=14.0.1': 14.0.2
   'body-parser@>=1 <1.20.9': 1.20.9
   'multer@>=2 <2.5.0': 2.5.0
   'fast-uri@>=3 <3.1.9': 3.1.9

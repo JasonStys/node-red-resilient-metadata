@@ -9,6 +9,14 @@ An installable TypeScript package that adds a reusable product-metadata lookup n
 
 The repository includes a dependency-free mock service, importable flows for normal and failure scenarios, JSON Schemas, an npm tarball build, unit and real-runtime integration tests, coverage enforcement, a performance regression guard, and GitHub security automation. Package acceptance also installs the final `.tgz` outside the source tree and runs its shipped nodes in the official Node-RED helper against a real, owned loopback HTTP provider.
 
+## Native Windows workbench
+
+The native Windows workbench adds a complete authoring and reliability-review workflow to this same project. Edit message batches, authorized synthetic provider records, queue/concurrency limits, deadlines and retries; save and execute the **actual shipped nodes in genuine Node-RED 5.0.8**. Inspect each original output/completion, request trace and queue state. Exercise real 429/503 retries, response failures and held-request cancellation/redeployment. Quit retains accepted I/O and the actual provider/child until normal completion.
+
+Projects and exact project/run pairs survive restart in a plaintext owner-local workspace. Ten runs and 16 MiB bound history, with explicit eviction counts. Import/export projects, export an exact run or export a credential-free ordinary Node-RED flow for independent approved integration. The native provider is owned numeric loopback only; no arbitrary-code editor, external endpoint or automatic MQTT connection is exposed. The original installable node package remains available for independently configured real services.
+
+The unsigned Windows x64 portable build bundles Electron and Node-RED; end users need no Node.js, pnpm, Python or IDE. New native source is under review; a public download is available only after a separately reviewed release is published. See the [native guide](docs/native-application.md), [component provenance](docs/native-npm-component.md), [tests](docs/testing.md) and [exact source declarations](docs/code-map.md). Existing published assets are unchanged.
+
 ## Why this project is useful
 
 Integration nodes live at a trust boundary. A small amount of code may receive arbitrary flow messages, hold credentials, call an unreliable service, and be stopped at any time. This package demonstrates how to make those boundaries explicit without turning a two-node package into a framework.
@@ -23,10 +31,11 @@ Integration nodes live at a trust boundary. A small amount of code may receive a
 
 ## Quick start
 
-Requirements: Node.js 22 or newer and pnpm 11.
+For source validation: Node.js 22.22.2+ or 24.15+, pnpm 11 and Python 3.14.10 for verified component preparation. The public node package itself retains its Node.js 22+ / Zod contract. Native app users need none of these build tools.
 
 ```bash
 corepack enable
+python scripts/prepare-npm-component.py --download --package
 pnpm install --frozen-lockfile
 pnpm verify
 pnpm pack:artifact
@@ -35,7 +44,7 @@ pnpm pack:artifact
 Install the generated tarball into a Node-RED user directory:
 
 ```bash
-npm install /absolute/path/to/node-red-contrib-resilient-metadata-1.0.0.tgz
+npm install /absolute/path/to/node-red-contrib-resilient-metadata-1.1.0.tgz
 ```
 
 Restart Node-RED, then import [`examples/flows/reliability-demo.json`](examples/flows/reliability-demo.json). Start the local simulator in another terminal:
