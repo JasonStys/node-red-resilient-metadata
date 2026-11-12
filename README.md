@@ -15,7 +15,7 @@ The native Windows workbench adds a complete authoring and reliability-review wo
 
 Projects and exact project/run pairs survive restart in a plaintext owner-local workspace. Ten runs and 16 MiB bound history, with explicit eviction counts. Import/export projects, export an exact run or export a credential-free ordinary Node-RED flow for independent approved integration. The native provider is owned numeric loopback only; no arbitrary-code editor, external endpoint or automatic MQTT connection is exposed. The original installable node package remains available for independently configured real services.
 
-The unsigned Windows x64 portable build bundles Electron and Node-RED; end users need no Node.js, pnpm, Python or IDE. New native source is under review; a public download is available only after a separately reviewed release is published. See the [native guide](docs/native-application.md), [component provenance](docs/native-npm-component.md), [tests](docs/testing.md) and [exact source declarations](docs/code-map.md). Existing published assets are unchanged.
+The [published unsigned Windows x64 portable release](https://github.com/JasonStys/node-red-resilient-metadata/releases/tag/v1.1.0) bundles Electron and Node-RED; end users need no Node.js, pnpm, Python or IDE. Independent downloads and the complete installed consumer passed ten workflow groups through two normal exits, with all 10,162 program files unchanged. See the [native guide](docs/native-application.md), [component provenance](docs/native-npm-component.md), [tests](docs/testing.md) and [exact source declarations](docs/code-map.md). Existing published assets are unchanged.
 
 ## Why this project is useful
 
@@ -184,3 +184,11 @@ MIT — see [`LICENSE`](LICENSE).
 Start with the [organized handbook](docs/handbook.md) for current usage, design, security and test guidance. Reviewed downloadable editions: [project-guide.docx](docs/reports/project-guide.docx).
 
 [Publication identities and source scope](docs/reports/publications.json) · [Documentation validation record](docs/reports/documentation-refresh-2026-11-09.md). Historical results retain their own tested revision and date.
+
+## Current Windows application guide
+
+The published **1.1.0** workbench has a four-page guide with original installed screenshots, actual author/save/deploy/inspect/cancel/export steps, a complete immutable deployment excerpt and measured limits. A separate two-scenario illustration capture is distinguished from the full installed ten-group consumer. Both current Dependabot update jobs also completed successfully after the tracked source-input correction. Historical Office editions remain unchanged.
+
+- [Illustrated Word guide](docs/reports/windows-application-guide-1.1.0.docx): real application use, actual screenshots, code and operating scope.
+- [Public review manifest](docs/reports/windows-application-guide-1.1.0.json): exact document/source/image/page identities and release/check links.
+- [Published installed observations](docs/reports/installed-windows-1.1.0-2026-11-12.md): full workflows, normal exits, unchanged files, provider recovery and limits.

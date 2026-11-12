@@ -16,7 +16,7 @@ The editable Markdown remains the maintenance source. The Word files are readabl
 
 ## Current usage and help
 
-The new [native application guide](native-application.md) covers the genuine editable Node-RED workbench, saved project/run history, independent flow exports and actual child/provider lifecycle. Existing Word publication identities above describe their recorded historical source baseline; they have not been silently regenerated to claim native-release acceptance. Native release/install/desktop-icon acceptance is recorded separately after reviewed delivery.
+The new [native application guide](native-application.md) covers the genuine editable Node-RED workbench, saved project/run history, independent flow exports and actual child/provider lifecycle. Existing Word publication identities above describe their recorded historical source baseline; they have not been silently regenerated to claim native-release acceptance. Published 1.1.0 acceptance is now recorded in the [current illustrated guide](reports/windows-application-guide-1.1.0.docx), [paired public manifest](reports/windows-application-guide-1.1.0.json) and [full installed observations](reports/installed-windows-1.1.0-2026-11-12.md). The ten-group consumer, separate illustration capture and icon target readback remain distinct scopes.
 
 [README quick start](../README.md) is the entry point. Use the project-specific guides below before changing inputs, operating modes or deployment assumptions.
 
@@ -45,7 +45,7 @@ The reviewed source is [`db08d20afb9088310b76d090c5c12e8964f4676d`](https://gith
 ## Practical boundaries
 
 - Synthetic local providers and in-memory fixture storage exercise the installed node lifecycle, not a production editor deployment, external provider availability or persistent flow configuration.
-- The Node-RED host remains a separate installation responsibility. No new public npm publication or native desktop installer is supplied.
+- Independent use of the original node package still requires a separately configured Node-RED host. The published portable workbench bundles its own fixed local host/provider; it is not an OS installer or an arbitrary Node-RED editor. No new public npm publication is claimed.
 - Known-advisory audit results are time-specific and do not prove absence of vulnerabilities; checksum evidence does not establish publisher authentication.
 
 ## Maintaining these editions
