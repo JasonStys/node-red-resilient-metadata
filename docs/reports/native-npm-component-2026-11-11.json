@@ -1,0 +1,158 @@
+{
+  "schema": 1,
+  "observedAtUtc": "2026-11-11T21:56:02.148439+00:00",
+  "scope": "Real npm component build and offline compatibility, separate from full desktop acceptance.",
+  "upstream": {
+    "schema": 1,
+    "version": "12.2.2",
+    "variant": "12.2.2+workbench.1",
+    "url": "https://registry.npmjs.org/npm/-/npm-12.2.2.tgz",
+    "integrity": "sha512-KglgbZyacf7jH+FHuNRqVuCzQi8VhI2a7J87Ix43FsPTuZoGWmIXXGdZtBUOA79vwL+IJREqURVzupA7PsQTcA==",
+    "bytes": 3069597,
+    "sha256": "07fecbf753e2c3bc10ebeb3e9ed8738f6a0cc1292998b79e2e9f1dd2a5525e0c",
+    "packageJsonSha256": "44c37a6a06ae01d4ad987bc4710031ae3a42d47173100316e4913ab2cd113cd3",
+    "coreInventorySha256": "8e9bc1094fab6e88d16cc6aa8d0d64a94843a661525efcb630ffeac3083a7f42",
+    "componentLockSha256": "487351ec768a305b5b44a584372e111a72811bb2ab88969b1d9e962ab2088c12",
+    "upstreamGitCommit": "fd31aa66f0b715bbae1fc072d24fc7e8f23657ad",
+    "patch": {
+      "dependencies": {
+        "glob": "14.0.2",
+        "minimatch": "11.0.5"
+      },
+      "removedManifestFields": [
+        "bundleDependencies",
+        "bundledDependencies",
+        "devDependencies",
+        "workspaces",
+        "scripts"
+      ],
+      "private": true
+    },
+    "upstreamFilesRetainedUnchanged": 416,
+    "identityLimit": "Disclosed locally rebuilt dependency variant, not the byte-identical official npm distribution or a signed package.",
+    "componentArchive": {
+      "filename": "npm-12.2.2-workbench.1.tar",
+      "format": "ustar-uncompressed",
+      "bytes": 3717120,
+      "sha256": "f94f6483388a8653fcc04ab0ce36b8b932ddc687a50bdc30bf9b2fbba4fb7184",
+      "integrity": "sha512-5oJ3+v0Oyn6tv1BkSKBEnZXvEjcsA1BGz7rokJvsmLVhvw79FgSoOnZF12mNDcEUCcsH/jCE8u35GTTG9/v35A==",
+      "executableFiles": [
+        "bin/node-gyp-bin/node-gyp",
+        "bin/node-gyp-bin/node-gyp.cmd",
+        "bin/npm",
+        "bin/npm-cli.js",
+        "bin/npm-prefix.js",
+        "bin/npm.cmd",
+        "bin/npx",
+        "bin/npx-cli.js",
+        "bin/npx.cmd",
+        "lib/utils/completion.sh"
+      ]
+    }
+  },
+  "actualNode": "24.22.2",
+  "frozenGraphPackagesIncludingRoot": 148,
+  "ci": {
+    "dependenciesInstalled": 147,
+    "lifecycleScriptsEnabled": false,
+    "engineStrict": true
+  },
+  "audit": {
+    "auditReportVersion": 2,
+    "vulnerabilities": {},
+    "metadata": {
+      "vulnerabilities": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0,
+        "total": 0
+      },
+      "dependencies": {
+        "prod": 146,
+        "dev": 0,
+        "optional": 2,
+        "peer": 0,
+        "peerOptional": 0,
+        "total": 147
+      }
+    }
+  },
+  "sourceAdmissionRegressions": {
+    "testsPassed": 22,
+    "networkUsed": false,
+    "realHardlinks": true
+  },
+  "actualOfflineCli": {
+    "passed": true,
+    "actualNode": "24.22.2",
+    "actualNpm": "12.2.2+workbench.1",
+    "checks": [
+      "actual upstream variant CLI identity",
+      "actual packlist exact files, nested ignore and no lifecycle",
+      "genuine offline archive production",
+      "genuine offline installation, exact bytes, tree and executable module",
+      "real uncached error preserves prior manifest and lock",
+      "patched matching libraries execute real nested/brace and refusal cases",
+      "actual network tripwire stayed unused"
+    ],
+    "registryRequests": 0,
+    "networkTripwireStopped": true,
+    "normalUserConfigurationRead": false,
+    "globalInstallation": false,
+    "fixtureScope": "Fresh owned synthetic package and consumer; no fetch mock, output fabrication, real user data or outside provider."
+  },
+  "preparedCoreFilesIncludingOwnLock": 418,
+  "systemNpmObservedFiles": {
+    "count": 2,
+    "unchanged": true,
+    "scope": "Original system npm entry and package metadata only; not an all-system change assertion."
+  },
+  "retainedFailedAttempts": [
+    "npm12 did not recognize the initial npm-shrinkwrap filename; actual audit returned ENOLOCK. The same lock bytes are now package-lock.json; failed output is retained.",
+    "First offline harness expected older npm pack JSON array schema; corrected to the actual npm12 keyed schema without changing expected file selection.",
+    "Second offline harness expected POSIX glob separators on Windows; explicit documented posix:true now makes the fixture platform-neutral. Matching expectations were retained."
+  ],
+  "limits": [
+    "A disclosed locally rebuilt manifest variant, not a byte-identical official npm distribution, publisher signature, or npm endorsement.",
+    "Zero audit findings is a point-in-time advisory observation, not proof of absence of defects.",
+    "Offline inert compatibility tests do not exercise every npm command, live external registries, arbitrary lifecycle scripts or user accounts.",
+    "Full Node-RED desktop and release/install acceptance is documented separately after it actually completes."
+  ],
+  "deterministicComponentArchive": {
+    "schema": 1,
+    "observedAtUtc": "2026-11-11T23:20:58.465199+00:00",
+    "upstreamArchiveVerified": true,
+    "componentArchive": {
+      "filename": "npm-12.2.2-workbench.1.tar",
+      "format": "ustar-uncompressed",
+      "bytes": 3717120,
+      "sha256": "f94f6483388a8653fcc04ab0ce36b8b932ddc687a50bdc30bf9b2fbba4fb7184",
+      "integrity": "sha512-5oJ3+v0Oyn6tv1BkSKBEnZXvEjcsA1BGz7rokJvsmLVhvw79FgSoOnZF12mNDcEUCcsH/jCE8u35GTTG9/v35A==",
+      "executableFiles": [
+        "bin/node-gyp-bin/node-gyp",
+        "bin/node-gyp-bin/node-gyp.cmd",
+        "bin/npm",
+        "bin/npm-cli.js",
+        "bin/npm-prefix.js",
+        "bin/npm.cmd",
+        "bin/npx",
+        "bin/npx-cli.js",
+        "bin/npx.cmd",
+        "lib/utils/completion.sh"
+      ]
+    },
+    "originalCoreModesIndependentlyCompared": 417,
+    "originalExecutableModesRetained": 10,
+    "tarMembersIndependentlyCompared": 418,
+    "tarMetadataFixed": true,
+    "tarContainsDependencies": false,
+    "sourceAdmissionRegressions": {
+      "testsPassed": 22,
+      "networkUsed": false,
+      "realHardlinks": true
+    },
+    "scope": "Local deterministic component packaging and regression controls. Parent dependency graphs and full desktop/release acceptance remain separate."
+  }
+}

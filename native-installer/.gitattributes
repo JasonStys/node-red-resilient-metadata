@@ -1,0 +1,4 @@
+# Exact reviewed data bytes must survive Windows checkouts.
+upstream-package.json -text -whitespace
+upstream-core.json -text -whitespace
+package-lock.json -text -whitespace

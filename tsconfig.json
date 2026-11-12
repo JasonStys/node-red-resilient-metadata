@@ -19,6 +19,7 @@
   "include": [
     "eslint.config.mjs",
     "scripts/**/*.mjs",
+    "desktop/ui/**/*.ts",
     "src/**/*.ts",
     "tests/**/*.ts",
     "vitest.config.mts",

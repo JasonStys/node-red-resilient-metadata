@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Node-RED Metadata Workbench</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div>
+        <p class="eyebrow">INTEGRATION RELIABILITY / ACTUAL NODE-RED</p>
+        <h1>Metadata Workbench</h1>
+        <p>Author messages. Inspect real retries. Retain the evidence.</p>
+      </div>
+      <div class="identity">
+        Jason Stys<br /><span id="version">v1.1.0</span><button id="quit">Exit application</button>
+      </div>
+    </header>
+    <main>
+      <section class="notice" aria-label="Runtime boundary">
+        <strong>Owned provider only</strong> This app runs the shipped metadata nodes in genuine
+        Node-RED 5.0.8 with your authored local records. It does not connect to external services,
+        MQTT or an arbitrary-code editor. Export a real flow for independent approved integration.
+      </section>
+      <section class="toolbar" aria-label="Project actions">
+        <button id="save" class="primary">Save project</button
+        ><button id="run">Deploy and run</button
+        ><button id="cancel" disabled>Cancel active batch</button
+        ><button id="prepared">Prepared project</button><button id="import">Import project</button
+        ><button id="previous">Review previous save</button
+        ><button id="export-project">Export project</button
+        ><button id="export-flow">Export Node-RED flow</button>
+      </section>
+      <p id="status" role="status">Opening the actual integration runtime...</p>
+      <section class="flow" aria-label="Actual runtime progress">
+        <div><strong>1 / Authored messages</strong><span id="flow-input">No batch yet</span></div>
+        <span aria-hidden="true">→</span>
+        <div>
+          <strong>2 / Original metadata node</strong
+          ><span id="flow-queue">Waiting for deployment</span>
+        </div>
+        <span aria-hidden="true">⇄</span>
+        <div>
+          <strong>3 / Owned provider</strong
+          ><span id="flow-provider">Numeric loopback, isolated records</span>
+        </div>
+        <span aria-hidden="true">→</span>
+        <div>
+          <strong>4 / Validated outputs</strong
+          ><span id="flow-output">Inspect exact saved results below</span>
+        </div>
+      </section>
+      <div class="columns">
+        <section class="panel" aria-labelledby="editor-title">
+          <h2 id="editor-title">Project &amp; reliability policy</h2>
+          <p id="saved-label" class="muted">Saved project</p>
+          <label>Project title<input id="title" maxlength="100" /></label>
+          <div class="policy">
+            <label>Timeout (ms)<input id="timeoutMs" type="number" min="100" max="10000" /></label
+            ><label
+              >Response cap (bytes)<input
+                id="maxResponseBytes"
+                type="number"
+                min="1024"
+                max="65536" /></label
+            ><label>Retries<input id="retryCount" type="number" min="0" max="2" /></label
+            ><label
+              >Retry spacing (ms)<input id="retryDelayMs" type="number" min="0" max="5000" /></label
+            ><label
+              >Concurrent requests<input id="maxConcurrent" type="number" min="1" max="8" /></label
+            ><label>Queue depth<input id="maxQueueDepth" type="number" min="0" max="64" /></label>
+          </div>
+          <label
+            >Message payloads (JSON array, 1–32)<textarea
+              id="payloads"
+              maxlength="2097152"
+              spellcheck="false"
+              rows="10"
+            ></textarea>
+          </label>
+          <p class="muted">
+            Each item is sent to the original node as <code>msg.payload</code>. Invalid payloads
+            intentionally produce structured validation failures.
+          </p>
+          <h3>Owned provider configuration</h3>
+          <div class="policy">
+            <label
+              >Fault scenario<select id="scenario">
+                <option value="success">Success / authored records</option>
+                <option value="rate-limit-once">429 once / Retry-After</option>
+                <option value="unavailable-once">503 once / Retry-After</option>
+                <option value="cooldown-excess">503 / excessive cooldown</option>
+                <option value="timeout">Response timeout</option>
+                <option value="malformed">Malformed metadata response</option>
+                <option value="auth">Authentication refused</option>
+                <option value="not-found">Record not found</option>
+                <option value="held">Held response / cancel drill</option>
+              </select></label
+            ><label
+              >Response delay (ms)<input id="responseDelayMs" type="number" min="0" max="3000"
+            /></label>
+          </div>
+          <label
+            >Authorized synthetic metadata records (JSON array, 1–16)<textarea
+              id="records"
+              maxlength="2097152"
+              spellcheck="false"
+              rows="16"
+            ></textarea>
+          </label>
+          <p class="muted">
+            Documentation URLs remain text and are never fetched. Duplicate product/edition records,
+            invalid record schema and oversized inputs are refused before saving. Metadata values
+            keep your authored meaning and units; they are not automatically calibrated or
+            converted.
+          </p>
+        </section>
+        <section class="panel" aria-labelledby="evidence-title">
+          <h2 id="evidence-title">Run evidence &amp; history</h2>
+          <p class="muted" id="history-budget">
+            Up to 10 runs / 16 MiB; older records are evicted explicitly.
+          </p>
+          <label
+            >Retained exact run<select id="history">
+              <option value="">No completed runs</option>
+            </select></label
+          >
+          <div class="toolbar">
+            <button id="restore-run">Review this run's project</button
+            ><button id="export-run">Export selected run</button>
+          </div>
+          <dl id="metrics" class="metrics"></dl>
+          <div class="table-scroll">
+            <table>
+              <caption>
+                Actual input completion and output
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Input</th>
+                  <th scope="col">Outcome</th>
+                  <th scope="col">Original done</th>
+                  <th scope="col">Inspect</th>
+                </tr>
+              </thead>
+              <tbody id="results"></tbody>
+            </table>
+          </div>
+          <h3>Selected output / provider trace</h3>
+          <pre id="detail" tabindex="0">
+No completed run is selected. A saved project has not necessarily been executed.</pre>
+          <h3>Operational boundaries</h3>
+          <ul class="limits">
+            <li>
+              The runtime's flow revision identifies its graph. The separate project SHA also binds
+              messages, records and scenario.
+            </li>
+            <li>
+              Cancellation redeploys the actual flow and waits for node completion and provider
+              response closure. A cancelled item is not reported as successful.
+            </li>
+            <li>
+              Workspace and exports are plaintext for one trusted OS account. They are not
+              authenticated reviewers, encrypted storage or an unlimited archive.
+            </li>
+            <li>
+              Quit retains accepted operations and the actual child until normal completion. A stale
+              owner lock is preserved for review after interruption.
+            </li>
+          </ul>
+        </section>
+      </div>
+    </main>
+    <dialog id="replace-confirm" aria-labelledby="replace-title" aria-describedby="replace-detail">
+      <h2 id="replace-title">Replace unsaved editor draft?</h2>
+      <p id="replace-detail">
+        Keep editing to save first. Replacing changes only the editor; the current saved project and
+        run history remain intact until an explicit save.
+      </p>
+      <div class="toolbar">
+        <button id="keep-draft">Keep editing</button
+        ><button id="replace-draft">Replace draft</button>
+      </div>
+    </dialog>
+    <footer>
+      Node-RED Metadata Workbench v1.1.0 · Jason Stys · github.com/JasonStys · Unsigned Windows
+      application
+    </footer>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

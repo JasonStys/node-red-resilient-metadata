@@ -10,3 +10,10 @@ artifacts/
 *.log
 .DS_Store
 Thumbs.db
+
+.runtime/
+release/
+__pycache__/
+*.py[cod]
+native-installer/source/
+native-installer/npm-12.2.2-workbench.1.tar
