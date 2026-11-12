@@ -31,33 +31,41 @@ jobs:
         with:
           python-version: '3.14.10'
       - name: Prepare and independently verify exact upstream installer component
-        run: |
-          python scripts/prepare-npm-component.py --download --package
-          python -m unittest discover -s native-installer/tests -p test_prepare.py -v
-      - name: Install all exact isolated locked graphs
-        run: |
-          corepack enable
-          pnpm install --frozen-lockfile
-          npm --prefix desktop ci --ignore-scripts
-          npm --prefix native-runtime ci --ignore-scripts --install-links
+        run: python scripts/prepare-npm-component.py --download
+      - name: Create the verified deterministic installer TAR without network
+        run: python scripts/prepare-npm-component.py --package
+      - name: Exercise actual cold CLI modes and preparation boundaries
+        run: python -m unittest discover -s native-installer/tests -p "test_prepare*.py" -v
+      - name: Enable the pinned original package manager
+        run: corepack enable
+      - name: Install the exact original locked development graph
+        run: pnpm install --frozen-lockfile
+      - name: Install the exact isolated desktop build graph
+        run: npm --prefix desktop ci --ignore-scripts
+      - name: Install the exact isolated shipped runtime graph
+        run: npm --prefix native-runtime ci --ignore-scripts --install-links
       - name: Install exact locked Electron runtime
         run: node desktop/node_modules/electron/install.js
-      - name: Audit actual private runtime and build-tool closures
-        run: |
-          node scripts/verify-physical-runtime.mjs development
-          node scripts/verify-physical-runtime.mjs native
-          npm --prefix native-runtime audit --audit-level=moderate
-          npm --prefix desktop audit --audit-level=moderate
-          pnpm audit --audit-level=moderate
-      - name: Prove actual patched npm CLI offline behavior under the shipped Node runtime
-        run: |
-          python native-installer/tests/offline_cli.py --node desktop/node_modules/electron/dist/electron.exe --component native --output artifacts/native-tooling/npm-cli-hosted-native
-          python native-installer/tests/offline_cli.py --node desktop/node_modules/electron/dist/electron.exe --component development --output artifacts/native-tooling/npm-cli-hosted-development
-      - name: Verify actual Node-RED engine, retained ownership and real archive controls
-        run: |
-          pnpm build
-          pnpm native:test
-          python -m unittest discover -s tests -p test_native_archive.py -v
+      - name: Verify physical development core and nested dependency identities
+        run: node scripts/verify-physical-runtime.mjs development
+      - name: Verify physical shipped core and nested dependency identities
+        run: node scripts/verify-physical-runtime.mjs native
+      - name: Audit the complete private runtime graph
+        run: npm --prefix native-runtime audit --audit-level=moderate
+      - name: Audit the complete desktop build graph
+        run: npm --prefix desktop audit --audit-level=moderate
+      - name: Audit the complete original development graph
+        run: pnpm audit --audit-level=moderate
+      - name: Prove shipped patched npm CLI offline behavior
+        run: python native-installer/tests/offline_cli.py --node desktop/node_modules/electron/dist/electron.exe --component native --output artifacts/native-tooling/npm-cli-hosted-native
+      - name: Prove development patched npm CLI offline behavior
+        run: python native-installer/tests/offline_cli.py --node desktop/node_modules/electron/dist/electron.exe --component development --output artifacts/native-tooling/npm-cli-hosted-development
+      - name: Build original compiled registrations
+        run: pnpm build
+      - name: Verify actual Node-RED engine and retained ownership
+        run: pnpm native:test
+      - name: Verify actual archive controls
+        run: python -m unittest discover -s tests -p test_native_archive.py -v
       - name: Build exact clean native application
         run: node scripts/build-native.mjs release/hosted
       - name: Relocate every actual payload and use the real app twice

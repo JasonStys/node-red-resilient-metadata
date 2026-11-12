@@ -44,7 +44,7 @@
     "typecheck": "tsc --noEmit",
     "code-map": "node scripts/generate-code-map.mjs",
     "code-map:check": "node scripts/generate-code-map.mjs --check",
-    "native:test": "node --test desktop/tests/channel.test.cjs desktop/tests/state-owner.test.cjs desktop/tests/startup-refusal.test.cjs desktop/tests/resources.test.cjs desktop/tests/physical-graph.test.cjs desktop/tests/engine.test.cjs",
+    "native:test": "node --test desktop/tests/channel.test.cjs desktop/tests/state-owner.test.cjs desktop/tests/startup-refusal.test.cjs desktop/tests/resources.test.cjs desktop/tests/physical-graph.test.cjs desktop/tests/engine.test.cjs desktop/tests/source-copy.test.cjs",
     "verify": "pnpm format:check && pnpm code-map:check && pnpm lint && pnpm typecheck && pnpm test && pnpm test:integration && pnpm build && pnpm benchmark && pnpm package:verify"
   },
   "dependencies": {

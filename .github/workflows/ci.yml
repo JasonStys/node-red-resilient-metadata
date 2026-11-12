@@ -30,7 +30,9 @@ jobs:
         with:
           python-version: '3.14.10'
       - name: Verify and prepare the original host's patched installer component
-        run: python scripts/prepare-npm-component.py --download --package
+        run: python scripts/prepare-npm-component.py --download
+      - name: Create the verified deterministic installer TAR without network
+        run: python scripts/prepare-npm-component.py --package
       - name: Set up Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:

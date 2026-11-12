@@ -35,7 +35,8 @@ For source validation: Node.js 22.22.2+ or 24.15+, pnpm 11 and Python 3.14.10 fo
 
 ```bash
 corepack enable
-python scripts/prepare-npm-component.py --download --package
+python scripts/prepare-npm-component.py --download
+python scripts/prepare-npm-component.py --package
 pnpm install --frozen-lockfile
 pnpm verify
 pnpm pack:artifact

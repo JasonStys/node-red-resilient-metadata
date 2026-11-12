@@ -10,7 +10,9 @@ import process from 'node:process';
 import { execFileSync } from 'node:child_process';
 import { createHash, randomBytes } from 'node:crypto';
 import { createRequire } from 'node:module';
+import { compareNativeSource, nativeResourceEntries } from './compare-native-source.mjs';
 const { readRegular } = createRequire(import.meta.url)('../desktop/files.cjs');
+const { verifiedResources } = createRequire(import.meta.url)('../desktop/resources.cjs');
 const root = path.resolve(import.meta.dirname, '..');
 const output = path.resolve(process.argv[2] ?? '');
 const allowDirty = process.argv[3] === '--allow-dirty';
@@ -139,7 +141,7 @@ const configuration = {
   directories: { output },
   files: ['*.mjs', '*.cjs', 'package.json'],
   extraResources: [
-    { from: path.join(staging, 'site'), to: 'workbench' },
+    ...nativeResourceEntries(path.join(staging, 'site')),
     { from: path.join(root, 'LICENSE'), to: 'notices/PROJECT-LICENSE.txt' },
     {
       from: path.join(staging, 'site/BUNDLED-NOTICES.txt'),
@@ -169,13 +171,14 @@ checked(process.execPath, [
   '--config',
   config,
 ]);
-if (
-  !readRegular(
-    path.join(output, 'win-unpacked/resources/workbench/SOURCE.json'),
-    8 * 1024 * 1024,
-  ).equals(readRegular(path.join(staging, 'site/SOURCE.json'), 512 * 1024))
-)
-  throw new Error('Packaged source identity was not copied.');
+compareNativeSource(
+  path.join(staging, 'site/SOURCE.json'),
+  path.join(output, 'win-unpacked/resources/workbench/SOURCE.json'),
+);
+verifiedResources(
+  path.join(output, 'win-unpacked/resources/workbench'),
+  path.join(output, 'win-unpacked/resources/app'),
+);
 for (const file of [
   'NodeRedMetadata.exe',
   'LICENSE.electron.txt',

@@ -26,14 +26,15 @@ Use locked tools and official Python 3.14.10 as a build tool only. Python is not
 
 ```powershell
 corepack enable
-python scripts/prepare-npm-component.py --download --package
+python scripts/prepare-npm-component.py --download
+python scripts/prepare-npm-component.py --package
 pnpm install --frozen-lockfile
 npm --prefix native-runtime ci --ignore-scripts --install-links
 npm --prefix desktop ci --ignore-scripts
 node desktop/node_modules/electron/install.js
 pnpm verify
 pnpm native:test
-python -m unittest discover -s native-installer/tests -p test_prepare.py -v
+python -m unittest discover -s native-installer/tests -p "test_prepare*.py" -v
 python -m unittest discover -s tests -p test_native_archive.py -v
 python native-installer/tests/offline_cli.py --node desktop/node_modules/electron/dist/electron.exe --output artifacts/native-tooling/npm-cli-check
 node scripts/build-native.mjs release/candidate
