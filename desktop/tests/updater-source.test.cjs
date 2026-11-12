@@ -22,7 +22,10 @@ function inertTar(manifest = null) {
         manifest ?? {
           name: 'updater-probe',
           version: '1.0.0',
-          scripts: { install: "node -e \"require('fs').writeFileSync('DO_NOT_EXECUTE','bad')\"" },
+          scripts: {
+            install:
+              "node -e \"require('fs').writeFileSync(process.env.UPDATER_LIFECYCLE_TRIPWIRE,'bad')\"",
+          },
         },
       ),
     ),
@@ -74,6 +77,7 @@ function pnpm(command, cwd, configuration) {
     USERPROFILE: path.join(configuration, 'profile'),
     XDG_CONFIG_HOME: path.join(configuration, 'config'),
     XDG_CACHE_HOME: path.join(configuration, 'cache'),
+    UPDATER_LIFECYCLE_TRIPWIRE: path.join(path.dirname(configuration), 'DO_NOT_EXECUTE'),
   });
   fs.mkdirSync(configuration, { recursive: true });
   fs.writeFileSync(env.npm_config_userconfig, '');
@@ -116,17 +120,33 @@ test('cold checkout contains the exact component input while original locators a
   assert.doesNotMatch(workspace, /blockExoticSubdeps:\s*false/u);
 });
 
+/** Read only the held fixture descriptor, including an extra-byte bound; never reopen by a prior stat pathname. */
+function heldBytes(descriptor, length) {
+  const bytes = Buffer.alloc(length + 1);
+  let count = 0;
+  while (count < bytes.length) {
+    const size = fs.readSync(descriptor, bytes, count, bytes.length - count, count);
+    if (!size) break;
+    count += size;
+  }
+  assert.equal(count, length);
+  assert.equal(fs.fstatSync(descriptor).size, length);
+  return bytes.subarray(0, count);
+}
+
 test('actual updater cold checkout refresh needs its tracked TAR and refuses changed bytes without running scripts', async (t) => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'metadata-updater-'));
   const body = inertTar();
   const sri = 'sha512-' + createHash('sha512').update(body).digest('base64');
   let requests = 0;
+  const descriptors = [];
   const server = http.createServer((_request, response) => {
     requests += 1;
     response.writeHead(503);
     response.end('No registry request is permitted in this fixture.');
   });
   t.after(async () => {
+    for (const descriptor of descriptors) fs.closeSync(descriptor);
     server.closeAllConnections();
     await new Promise((resolve, reject) =>
       server.close((error) => (error ? reject(error) : resolve())),
@@ -150,7 +170,7 @@ test('actual updater cold checkout refresh needs its tracked TAR and refuses cha
       name: 'inert-updater-source-check',
       version: '1.0.0',
       private: true,
-      dependencies: { 'updater-parent': 'file:./parent.tar' },
+      dependencies: { 'updater-parent': 'file:parent.tar' },
     }),
   );
   fs.writeFileSync(
@@ -163,7 +183,7 @@ test('actual updater cold checkout refresh needs its tracked TAR and refuses cha
   );
   fs.writeFileSync(
     path.join(project, 'pnpm-workspace.yaml'),
-    "blockExoticSubdeps: true\noverrides:\n  'updater-probe@1.0.0': file:./component.tar\n",
+    "blockExoticSubdeps: true\noverrides:\n  'updater-probe@1.0.0': file:component.tar\n",
   );
   const version = await pnpm(['--version'], project, path.join(root, 'version-config'));
   assert.equal(version.code, 0, version.stderr);
@@ -184,8 +204,11 @@ test('actual updater cold checkout refresh needs its tracked TAR and refuses cha
   assert.match(old.stdout + old.stderr, /ENOENT/u);
   const component = path.join(project, 'component.tar');
   assert.equal(fs.existsSync(component), false);
-  fs.writeFileSync(component, body);
-  const before = fs.statSync(component);
+  const descriptor = fs.openSync(component, 'wx+');
+  descriptors.push(descriptor);
+  fs.writeFileSync(descriptor, body);
+  fs.fsyncSync(descriptor);
+  const before = fs.fstatSync(descriptor);
   const replacement = await pnpm(
     [...command, path.join(root, 'tracked-store')],
     project,
@@ -195,30 +218,53 @@ test('actual updater cold checkout refresh needs its tracked TAR and refuses cha
   const lock = fs.readFileSync(path.join(project, 'pnpm-lock.yaml'), 'utf8');
   assert.ok(lock.includes(sri) && lock.includes('file:component.tar'));
   assert.equal(fs.existsSync(path.join(project, 'node_modules')), false);
-  assert.deepEqual(fs.readFileSync(component), body);
-  assert.equal(fs.statSync(component).mtimeMs, before.mtimeMs);
-  const changedBytes = Buffer.from(body);
-  changedBytes[body.indexOf('inert updater transport fixture')] ^= 1;
-  fs.writeFileSync(component, changedBytes);
-  const changed = await pnpm(
-    [
-      'install',
-      '--frozen-lockfile',
-      '--ignore-scripts',
-      '--fetch-retries=0',
-      '--store-dir',
-      path.join(root, 'tampered-store'),
-    ],
+  assert.deepEqual(heldBytes(descriptor, body.length), body);
+  assert.equal(fs.fstatSync(descriptor).mtimeMs, before.mtimeMs);
+  const frozen = [
+    'install',
+    '--frozen-lockfile',
+    '--ignore-scripts',
+    '--fetch-retries=0',
+    '--store-dir',
+  ];
+  const coherent = await pnpm(
+    [...frozen, path.join(root, 'coherent-store')],
     project,
+    path.join(root, 'coherent-config'),
+  );
+  assert.equal(coherent.code, 0, coherent.stdout + coherent.stderr);
+  assert.deepEqual(heldBytes(descriptor, body.length), body);
+  // A fresh checkout prevents an already installed module or store from hiding changed input.
+  const tampered = path.join(root, 'tampered-checkout');
+  fs.mkdirSync(tampered);
+  for (const name of [
+    '.npmrc',
+    'package.json',
+    'parent.tar',
+    'pnpm-workspace.yaml',
+    'pnpm-lock.yaml',
+  ])
+    fs.writeFileSync(path.join(tampered, name), fs.readFileSync(path.join(project, name)), {
+      flag: 'wx',
+    });
+  const changedBytes = Buffer.from(body);
+  const changedAt = body.indexOf('inert updater transport fixture');
+  assert.ok(changedAt >= 0);
+  changedBytes[changedAt] ^= 1;
+  const changedDescriptor = fs.openSync(path.join(tampered, 'component.tar'), 'wx+');
+  descriptors.push(changedDescriptor);
+  fs.writeFileSync(changedDescriptor, changedBytes);
+  fs.fsyncSync(changedDescriptor);
+  const changed = await pnpm(
+    [...frozen, path.join(root, 'tampered-store')],
+    tampered,
     path.join(root, 'tampered-config'),
   );
   assert.notEqual(changed.code, 0);
   assert.match(changed.stdout + changed.stderr, /ERR_PNPM_TARBALL_INTEGRITY/u);
-  assert.deepEqual(fs.readFileSync(component), changedBytes);
-  assert.equal(
-    fs.existsSync(path.join(project, 'node_modules/updater-probe/DO_NOT_EXECUTE')),
-    false,
-  );
+  assert.deepEqual(heldBytes(changedDescriptor, changedBytes.length), changedBytes);
+  assert.deepEqual(heldBytes(descriptor, body.length), body);
+  assert.equal(fs.existsSync(path.join(root, 'DO_NOT_EXECUTE')), false);
   assert.equal(
     requests,
     0,
