@@ -2,7 +2,7 @@
 Purpose: Validate a complete Windows ZIP, relocate it and use the actual bundled native application.
 Functions: create_archive/extract_archive bound names and real bytes; main owns only fresh test paths.
 Variables: fixed product/version, finite expansion budgets and current-source synthetic receipts.
-Source navigation: docs/native-application.md; the generated code map indexes TypeScript/JavaScript only.
+Source navigation: docs/code-map.md indexes authored Python, TypeScript and JavaScript declarations.
 """
 
 from __future__ import annotations

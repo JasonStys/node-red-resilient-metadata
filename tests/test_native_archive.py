@@ -2,7 +2,7 @@
 Purpose: Check actual archive inputs, traversal, special files, duplicate names and expansion bounds.
 Functions: unittest cases exercise real ZIPs and retained byte sentinels; no app/profile is launched.
 Variables: all files live in new temporary directories; originals and earlier evidence are untouched.
-Source navigation: docs/native-application.md; the generated code map indexes TypeScript/JavaScript only.
+Source navigation: docs/code-map.md indexes authored Python, TypeScript and JavaScript declarations.
 """
 
 import importlib.util
