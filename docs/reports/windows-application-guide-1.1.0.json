@@ -1,0 +1,139 @@
+{
+  "schema": 1,
+  "repository": "node-red-resilient-metadata",
+  "runtimeVersion": "1.1.0",
+  "runtimeSource": "fa088a1eff06d910b2cd3bc99a7106929667317b",
+  "createdAt": "2026-11-12T03:29:23.429Z",
+  "author": "Jason Stys",
+  "document": "windows-application-guide-1.1.0.docx",
+  "sha256": "8aebece2b93ee3fb72a82860b2dd68bc8acaaf58361d903cf9f71359fb5babd4",
+  "screenshots": [
+    {
+      "file": "authored-metadata-viewport.png",
+      "sha256": "d394e1eded54309199f331826c21b4999ec7ec9934737007a1c859164d4a446b",
+      "width": 1465,
+      "height": 918,
+      "caption": "The actual flow shows two successful authored inputs and the saved project's policy and history controls. The capture driver separately inspected the drive-200 result at 460 V."
+    },
+    {
+      "file": "cancelled-evidence-viewport.png",
+      "sha256": "aeebef74f6c0361cc501e1bcac9d1b29585816f34bdc7cb41238bd6f1fb1f22c",
+      "width": 1465,
+      "height": 918,
+      "caption": "Run evidence retains cancelled=true, the input's cancelled outcome and original done=true. The owned provider listener remains available for another scenario; Exit drains it separately."
+    }
+  ],
+  "snippets": [
+    {
+      "file": "desktop/flow-engine.cjs",
+      "first": 305,
+      "last": 320,
+      "sha256": "b79529901e419b6024ddcfd16952472f47a8c54ea30d04677b04e405470ef172",
+      "url": "https://github.com/JasonStys/node-red-resilient-metadata/blob/fa088a1eff06d910b2cd3bc99a7106929667317b/desktop/flow-engine.cjs#L305"
+    }
+  ],
+  "observedTests": [
+    {
+      "name": "Installed workflows",
+      "observed": "Five assets matched provider identities and checksums. All ten original workflow groups passed through two normal exits. All 10,162 program files stayed unchanged.",
+      "result": "Passed"
+    },
+    {
+      "name": "Source and updater",
+      "observed": "All three main workflows and three processed CodeQL categories passed, with zero raw findings/open alerts. Both fresh Dependabot jobs executed real PNPM updates and submitted their PR changes.",
+      "result": "Passed"
+    },
+    {
+      "name": "Capture and icons",
+      "observed": "The separate two-scenario illustration capture passed with one normal exit. Both known Desktop and Start-menu targets were read back. Ordinary default-profile icon activation was not independently tested.",
+      "result": "Passed"
+    }
+  ],
+  "visualReview": {
+    "approved": true,
+    "reviewers": ["root", "audit_cyber"],
+    "pageCount": 4,
+    "pages": [
+      {
+        "page": 1,
+        "sha256": "16ce6c49c9df791102f1318164a0a22707472c605317b9fb2842111d06a473c3"
+      },
+      {
+        "page": 2,
+        "sha256": "cf555c010ad59b9ed2efed35e03c0381d7054ace224ad00c3aa88e15178b1057"
+      },
+      {
+        "page": 3,
+        "sha256": "a237ea59751a0ecff5291ef6882c97fcd3da8d7b904f63608e05c4d99037ed16"
+      },
+      {
+        "page": 4,
+        "sha256": "75f9ad50a2fbb618fbd70a2424818a77db15557b014d2f78f59d1a3d9608b004"
+      }
+    ],
+    "ooxmlSchema": "passed",
+    "scope": "Every final page individually viewed; original screenshots and complete immutable code excerpt checked."
+  },
+  "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "bytes": 220096,
+  "release": {
+    "id": 442454805,
+    "url": "https://github.com/JasonStys/node-red-resilient-metadata/releases/tag/v1.1.0",
+    "assets": [
+      {
+        "name": "NodeRedMetadata-1.1.0-windows-x64.zip",
+        "bytes": 250689942,
+        "sha256": "87e832861acc44e68d46c2fd228500c3d96336e9acc72fbdc04b16cd5c267c15"
+      },
+      {
+        "name": "NodeRedMetadata-1.1.0-windows-x64.zip.sha256",
+        "bytes": 104,
+        "sha256": "0d72cbadac438b629ca0ab19264e0f0072c2bef861fea358c5bcce2651bb5eca"
+      },
+      {
+        "name": "SOURCE.json",
+        "bytes": 1293709,
+        "sha256": "7d14fb2872a60dd6bdf6a40edbee7dee7bb2a5fd99f44cdf7b76a48794acc8de"
+      },
+      {
+        "name": "LICENSE.txt",
+        "bytes": 1067,
+        "sha256": "7bfeff0414583e7de937ae17f9c9a182f1c1a3f9350781b80e4d074d7fde4d48"
+      },
+      {
+        "name": "INSTALL.txt",
+        "bytes": 870,
+        "sha256": "e5249f4641582860a37249ff85493e54e30a39283432d1a23493b72b1f797e2a"
+      }
+    ]
+  },
+  "sourceChecks": [
+    {
+      "workflow": ".github/workflows/codeql.yml",
+      "url": "https://github.com/JasonStys/node-red-resilient-metadata/actions/runs/43146114576"
+    },
+    {
+      "workflow": ".github/workflows/native-app.yml",
+      "url": "https://github.com/JasonStys/node-red-resilient-metadata/actions/runs/43146114554"
+    },
+    {
+      "workflow": ".github/workflows/ci.yml",
+      "url": "https://github.com/JasonStys/node-red-resilient-metadata/actions/runs/43146114541"
+    }
+  ],
+  "codeqlAnalysisIds": [2148923252, 2148920147, 2148919771],
+  "providerRecoveryChecks": [
+    "https://github.com/JasonStys/node-red-resilient-metadata/actions/runs/43146262432",
+    "https://github.com/JasonStys/node-red-resilient-metadata/actions/runs/43146264791"
+  ],
+  "sourceEvidence": {
+    "receiptSha256": "3503251ba275d4076b906e11277cc5b0f271aa77ee61c2905d5f1dd60634e402",
+    "installedAcceptanceSha256": "3c202a0cdb7c780b6ad37e83ffac3f7e018eae86001515dedb995afd779a4251",
+    "guideCaptureSha256": "edbad5151d9a82a6f6f2f847942d015c9ca7fb2fa13dc05e7362b9f6e42067c5",
+    "sourceFileSha256": "b79529901e419b6024ddcfd16952472f47a8c54ea30d04677b04e405470ef172",
+    "recoveryReceiptSha256": "a546f73354f81478af6de91566ba501f4ca15ae76bcf77751d88147a994ac685",
+    "currentSourceAuditSha256": "ca07d168fcaae5ff4aa02a9566904818cae26930995488760e04996810fee301",
+    "authoringInputSha256": "e6f8464c8b1c08cd698f15bbc47f65fb0323a692d86d416d114682ffd195908f",
+    "scope": "Hash-bound exact-runtime aggregate observations; raw private PC paths, profiles, receipts and account data are excluded. Hashes identify bytes, not publisher signatures."
+  }
+}

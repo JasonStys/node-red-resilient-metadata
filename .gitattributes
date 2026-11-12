@@ -11,3 +11,5 @@ docs/reports/project-guide.docx binary
 
 # Exact third-party source input: preserve reviewed bytes on every checkout.
 native-installer/npm-12.2.2-workbench.1.tar binary
+
+docs/reports/windows-application-guide-1.1.0.docx binary
