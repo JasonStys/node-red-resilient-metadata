@@ -10,7 +10,7 @@ import process from 'node:process';
 import { execFileSync } from 'node:child_process';
 import { createHash, randomBytes } from 'node:crypto';
 import { createRequire } from 'node:module';
-import { compareNativeSource, nativeResourceEntries } from './compare-native-source.mjs';
+import { compareNativeSource, copyNativeResources } from './compare-native-source.mjs';
 const { readRegular } = createRequire(import.meta.url)('../desktop/files.cjs');
 const { verifiedResources } = createRequire(import.meta.url)('../desktop/resources.cjs');
 const root = path.resolve(import.meta.dirname, '..');
@@ -141,7 +141,6 @@ const configuration = {
   directories: { output },
   files: ['*.mjs', '*.cjs', 'package.json'],
   extraResources: [
-    ...nativeResourceEntries(path.join(staging, 'site')),
     { from: path.join(root, 'LICENSE'), to: 'notices/PROJECT-LICENSE.txt' },
     {
       from: path.join(staging, 'site/BUNDLED-NOTICES.txt'),
@@ -171,6 +170,11 @@ checked(process.execPath, [
   '--config',
   config,
 ]);
+copyNativeResources(
+  path.join(staging, 'site'),
+  path.join(output, 'win-unpacked/resources/workbench'),
+  path.join(root, 'desktop'),
+);
 compareNativeSource(
   path.join(staging, 'site/SOURCE.json'),
   path.join(output, 'win-unpacked/resources/workbench/SOURCE.json'),
