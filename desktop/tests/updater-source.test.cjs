@@ -202,8 +202,8 @@ test('actual updater cold checkout refresh needs its tracked TAR and refuses cha
   );
   assert.notEqual(old.code, 0);
   assert.match(old.stdout + old.stderr, /ENOENT/u);
+  assert.match(old.stdout + old.stderr, /component\.tar/u);
   const component = path.join(project, 'component.tar');
-  assert.equal(fs.existsSync(component), false);
   const descriptor = fs.openSync(component, 'wx+');
   descriptors.push(descriptor);
   fs.writeFileSync(descriptor, body);
@@ -232,7 +232,43 @@ test('actual updater cold checkout refresh needs its tracked TAR and refuses cha
     project,
     path.join(root, 'coherent-config'),
   );
-  assert.equal(coherent.code, 0, coherent.stdout + coherent.stderr);
+  let diagnostic = null;
+  if (coherent.code !== 0) {
+    const witness = await new Promise((resolve) => {
+      execFile(
+        process.execPath,
+        [
+          '-e',
+          "console.log(JSON.stringify({cwd:process.cwd(),canonical:require('node:fs').realpathSync('.'),node:process.version}))",
+        ],
+        { cwd: project, windowsHide: true, timeout: 5000, maxBuffer: 8192 },
+        (error, stdout, stderr) => resolve({ error: error?.code ?? null, stdout, stderr }),
+      );
+    });
+    diagnostic = {
+      stage: 'positive-frozen-countercontrol',
+      requestedProject: project,
+      canonicalProject: fs.realpathSync(project),
+      sourceDirectory: ROOT,
+      sourceDrive: path.parse(ROOT).root,
+      fixtureDrive: path.parse(project).root,
+      node: process.version,
+      pnpmVersion: version.stdout.trim(),
+      pnpmEntrypoint: process.env.npm_execpath,
+      childWitness: witness,
+      inertManifest: JSON.parse(fs.readFileSync(path.join(project, 'package.json'), 'utf8')),
+      inertLock: lock.slice(0, 8192),
+      explicitFixtureConfig: fs.readFileSync(path.join(project, '.npmrc'), 'utf8').slice(0, 1024),
+      explicitWorkspace: fs
+        .readFileSync(path.join(project, 'pnpm-workspace.yaml'), 'utf8')
+        .slice(0, 1024),
+    };
+  }
+  assert.equal(
+    coherent.code,
+    0,
+    JSON.stringify({ diagnostic, stdout: coherent.stdout, stderr: coherent.stderr }),
+  );
   assert.deepEqual(heldBytes(descriptor, body.length), body);
   // A fresh checkout prevents an already installed module or store from hiding changed input.
   const tampered = path.join(root, 'tampered-checkout');
