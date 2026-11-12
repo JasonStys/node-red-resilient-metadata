@@ -135,7 +135,16 @@ function heldBytes(descriptor, length) {
 }
 
 test('actual updater cold checkout refresh needs its tracked TAR and refuses changed bytes without running scripts', async (t) => {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'metadata-updater-'));
+  // pnpm resolves its workspace with native realpath; construct every prefix
+  // from that physical spelling rather than a Windows RUNNER~1 TEMP alias.
+  const temporaryParent = fs.realpathSync.native(os.tmpdir());
+  const root = fs.mkdtempSync(path.join(temporaryParent, 'metadata-updater-'));
+  t.diagnostic(
+    JSON.stringify({
+      fixtureParentNativeCanonical: temporaryParent === fs.realpathSync.native(temporaryParent),
+      osTemporaryParentRequiredNativeCanonicalization: temporaryParent !== os.tmpdir(),
+    }),
+  );
   const body = inertTar();
   const sri = 'sha512-' + createHash('sha512').update(body).digest('base64');
   let requests = 0;
@@ -151,7 +160,7 @@ test('actual updater cold checkout refresh needs its tracked TAR and refuses cha
     await new Promise((resolve, reject) =>
       server.close((error) => (error ? reject(error) : resolve())),
     );
-    assert.ok(root.startsWith(os.tmpdir() + path.sep));
+    assert.ok(root.startsWith(temporaryParent + path.sep));
     fs.rmSync(root, { recursive: true });
   });
   await new Promise((resolve, reject) => {
@@ -160,6 +169,7 @@ test('actual updater cold checkout refresh needs its tracked TAR and refuses cha
   });
   const project = path.join(root, 'updater-checkout');
   fs.mkdirSync(project);
+  assert.equal(fs.realpathSync.native(project), project);
   fs.writeFileSync(
     path.join(project, '.npmrc'),
     `registry=http://127.0.0.1:${server.address().port}/tripwire\nfetch-retries=0\nupdate-notifier=false\nmanage-package-manager-versions=false\n`,
@@ -239,7 +249,7 @@ test('actual updater cold checkout refresh needs its tracked TAR and refuses cha
         process.execPath,
         [
           '-e',
-          "console.log(JSON.stringify({cwd:process.cwd(),canonical:require('node:fs').realpathSync('.'),node:process.version}))",
+          "console.log(JSON.stringify({cwd:process.cwd(),legacyCanonical:require('node:fs').realpathSync('.'),nativeCanonical:require('node:fs').realpathSync.native('.'),node:process.version}))",
         ],
         { cwd: project, windowsHide: true, timeout: 5000, maxBuffer: 8192 },
         (error, stdout, stderr) => resolve({ error: error?.code ?? null, stdout, stderr }),
@@ -249,6 +259,9 @@ test('actual updater cold checkout refresh needs its tracked TAR and refuses cha
       stage: 'positive-frozen-countercontrol',
       requestedProject: project,
       canonicalProject: fs.realpathSync(project),
+      nativeCanonicalProject: fs.realpathSync.native(project),
+      rawTemporaryParent: os.tmpdir(),
+      nativeTemporaryParent: temporaryParent,
       sourceDirectory: ROOT,
       sourceDrive: path.parse(ROOT).root,
       fixtureDrive: path.parse(project).root,
