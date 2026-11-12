@@ -127,14 +127,16 @@ test('complete copying refuses an existing destination without touching its sent
 });
 test('invalid declared paths or changed source bodies are refused before creating the destination', async (t) => {
   const { copyNativeResources } = await import('../../scripts/compare-native-source.mjs');
-  const { root, site, owner, metadata } = sourceFixture(t);
+  const { root, site, owner, files, metadata } = sourceFixture(t);
   const output = path.join(root, 'refused');
   fs.writeFileSync(path.join(site, 'style.css'), 'changed body');
   assert.throws(() => copyNativeResources(site, output, owner));
   assert.equal(fs.existsSync(output), false);
+  fs.writeFileSync(path.join(site, 'style.css'), files['style.css']);
+  verifiedResources(site, owner); // Prove the first fault is fully repaired before the independent path fault.
   metadata.files['../outside.txt'] = '0'.repeat(64);
   fs.writeFileSync(path.join(site, 'SOURCE.json'), JSON.stringify(metadata));
-  assert.throws(() => copyNativeResources(site, output, owner));
+  assert.throws(() => copyNativeResources(site, output, owner), /Unsafe packaged member/);
   assert.equal(fs.existsSync(output), false);
   assert.equal(fs.existsSync(path.join(root, 'outside.txt')), false);
 });
