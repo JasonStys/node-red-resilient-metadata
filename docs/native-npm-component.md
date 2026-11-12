@@ -20,7 +20,7 @@ The helper cross-checks the full original core inventory, exact metadata transfo
 
 Preparation is an explicitly invoked build operation in a trusted OS-owner workspace. Static ancestor admission and descriptor checks do not establish a sandbox against a hostile concurrent process running as that same OS user.
 
-The **component's own** `package-lock.json` contains 148 nodes including its root. Its 147 dependencies are installed with lifecycle scripts disabled and engine checks enabled. npm12 reads `package-lock.json`; the earlier `npm-shrinkwrap.json` attempt returned a real ENOLOCK and is retained as a failed attempt. The native runtime has a **separate** frozen lock and direct local npm dependency. Its own installation/audit is necessary; the component lock is not a transitive-lock substitute.
+The **component's own** `package-lock.json` contains 148 nodes including its root. Its 147 dependencies are installed with lifecycle scripts disabled and engine checks enabled. npm12 reads `package-lock.json`; the earlier `npm-shrinkwrap.json` attempt returned a real ENOLOCK and is retained as a failed attempt. The native runtime has a **separate** frozen lock and direct local npm dependency. Its own installation/audit is necessary; the component lock is not a transitive-lock substitute. The exact parent input TAR is tracked in Git so a cold dependency-updater checkout contains it without a build hook.
 
 Run commands from the repository with a supported Node runtime and isolated user/global configuration:
 
@@ -71,7 +71,7 @@ Each application-owned Python file has an introductory purpose, function/class d
 
 ## Original development host and actual installed closures
 
-The same verified component now replaces only `npm@11.21.0` in the original pnpm development host. Node-RED stays 5.0.8; both original helper initialization calls, all source/integration/installed-tarball cases and the public package's Zod dependency remain intact. A scoped glob override also selects 14.0.2. Prepare the generated component before a frozen pnpm install, including on a cold checkout. This is a development dependency repair, not a new dependency in the public node package.
+The same verified component now replaces only `npm@11.21.0` in the original pnpm development host. Node-RED stays 5.0.8; both original helper initialization calls, all source/integration/installed-tarball cases and the public package's Zod dependency remain intact. A scoped glob override also selects 14.0.2. The tracked TAR supports a cold frozen install; CI additionally prepares the original source and reproduces the TAR before installation. This is a development dependency repair, not a new dependency in the public node package.
 
 Independent physical inspection found an affected glob 13.0.7 and stale bundled minimatch 10.2.5 after an in-place dependency update. The old tree was preserved and a fresh frozen install removed that residue. The actual original-host 595 package roots and native 413 dependency roots now resolve glob 14.0.2/minimatch 11.0.5 with no opaque bundle declarations; 416 original non-manifest core files and the disclosed variant manifest are checked separately. These counts describe installed resolution roots, not unused cache/store copies or a universal proof about arbitrary vendor code. Full locked advisory audits remain separate required gates.
 
@@ -81,12 +81,12 @@ The genuine offline CLI fixtures also run from each **actually installed** devel
 
 `--package` is a separate, explicit network-free build operation after preparation.
 It rechecks all 418 ordinary single-link inputs, and emits
-`native-installer/npm-12.2.2-workbench.1.tar`. This generated file is ignored by Git.
+`native-installer/npm-12.2.2-workbench.1.tar`. This exact third-party source input is tracked in Git.
 The uncompressed USTAR has sorted `package/` paths, original upstream file modes
 (ten executable files), fixed zero IDs/time, empty owner names, and no dependencies.
 Its exact 3,717,120 bytes, SHA-256 and SHA-512 SRI are pinned in `upstream.json`.
 Both parent locks must bind that same TAR; the component's own frozen lock remains
-a separate validation input. Cold checkouts prepare then package before installation.
+a separate validation input. A cold updater needs only this tracked input. CI separately prepares and reproduces it before installation, comparing existing bytes without overwriting them.
 
 Directory imports were tested and caused the development package manager to hardlink
 prepared core files even with its copy import preference. Those failed candidate
@@ -104,3 +104,9 @@ digests, changed source/manifest/lock rejection, and no-clobber output checks.
 An independent comparison read all 417 official core modes and all 418 generated
 TAR bodies. These checks do not claim publisher signing, arbitrary lifecycle safety,
 or completed desktop acceptance.
+
+## Dependency updater source admission, 2026-11-12
+
+Two actual Dependabot updates failed because the formerly ignored TAR was absent from their checkout. Tracking the exact 3.7 MB input preserves the original local dependency locators, both frozen locks and pnpm's default exotic-transitive-source refusal. No updater, advisory gate or source check is disabled. The preparation helper verifies an existing input before a network request or generated-source mutation; reproduction accepts identical bytes and preserves/refuses a changed input. The [dated report](reports/dependabot-source-input-2026-11-12.md) records actual production lock-refresh and independent transitive-fixture results, including the limitation that a successful hosted Dependabot update must be observed separately.
+
+The [supplemental tooling release](https://github.com/JasonStys/node-red-resilient-metadata/releases/tag/tooling-npm-12.2.2-workbench.1) contains the same deterministic TAR for independent reproduction. Its byte hashes identify content; this is neither an application installer nor a signed npm distribution, and the release is not claimed to be server-enforced immutable.

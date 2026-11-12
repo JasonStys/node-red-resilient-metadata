@@ -18,6 +18,7 @@ import tarfile
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[2]
 HELPER = ROOT / "scripts/prepare-npm-component.py"
@@ -142,6 +143,45 @@ class ColdCli(unittest.TestCase):
             third = command(helper, "--verify")
             self.assertEqual(third.returncode, 0, third.stderr)
             self.assertFalse(json.loads(third.stdout)["networkUsed"])
+            self.assertEqual(
+                (before.st_ino, before.st_mtime_ns),
+                (output.stat().st_ino, output.stat().st_mtime_ns),
+            )
+
+    def test_tracked_tar_is_compared_without_overwriting_on_actual_cold_setup(self):
+        with tempfile.TemporaryDirectory(prefix="npm-tracked-cold-") as temporary:
+            helper, component, upstream, expected = cold_repository(Path(temporary))
+            output = component / MODULE.COMPONENT_FILENAME
+            output.write_bytes(expected)
+            before = output.stat()
+            self.assertFalse((component / "source").exists())
+            for arguments in [("--archive", upstream), ("--package",), ("--verify",)]:
+                result = command(helper, *arguments)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(output.read_bytes(), expected)
+                self.assertEqual(
+                    (before.st_ino, before.st_mtime_ns),
+                    (output.stat().st_ino, output.stat().st_mtime_ns),
+                )
+
+    def test_corrupted_tracked_byte_is_refused_before_network_or_source_mutation(self):
+        with tempfile.TemporaryDirectory(prefix="npm-tracked-changed-") as temporary:
+            _, component, _, expected = cold_repository(Path(temporary))
+            output = component / MODULE.COMPONENT_FILENAME
+            changed = bytearray(expected)
+            changed[512] ^= 1
+            output.write_bytes(changed)
+            before = output.stat()
+            with (
+                mock.patch.object(MODULE, "COMPONENT", component),
+                mock.patch.object(sys, "argv", [str(HELPER), "--download"]),
+                mock.patch.object(MODULE.urllib.request, "build_opener") as network,
+                self.assertRaisesRegex(ValueError, "Component archive identity differs"),
+            ):
+                MODULE.main()
+            network.assert_not_called()
+            self.assertFalse((component / "source").exists())
+            self.assertEqual(output.read_bytes(), changed)
             self.assertEqual(
                 (before.st_ino, before.st_mtime_ns),
                 (output.stat().st_ino, output.stat().st_mtime_ns),

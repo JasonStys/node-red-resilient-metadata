@@ -33,6 +33,8 @@ Integration nodes live at a trust boundary. A small amount of code may receive a
 
 For source validation: Node.js 22.22.2+ or 24.15+, pnpm 11 and Python 3.14.10 for verified component preparation. The public node package itself retains its Node.js 22+ / Zod contract. Native app users need none of these build tools.
 
+Cold checkouts include the exact third-party component TAR used by both frozen parent locks. This lets dependency updaters resolve the original Node-RED development host without running a project preparation script. The following preparation commands independently reproduce and compare that input; a changed tracked TAR fails before a download or source write. See the [updater source-input report](docs/reports/dependabot-source-input-2026-11-12.md) for the actual missing-file failure, retained supply-chain defaults and validation limits.
+
 ```bash
 corepack enable
 python scripts/prepare-npm-component.py --download
